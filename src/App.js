@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { Provider } from "react-redux";
+
+import "./App.css";
+import Home from "./pages/Home";
+import Header from "./components/Header";
+import store from "./utils/store";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Video from "./pages/Video";
+import Body from "./components/Body";
+
+const RenderLayout = () => (
+  <div className="h-screen overflow-hidden">
+    <Provider store={store}>
+      <Header />
+      <Body />
+    </Provider>
+  </div>
+);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const appRouter = createBrowserRouter([
+    {
+      path: "/",
+      element: <RenderLayout />,
+      children: [
+        {
+          path: "",
+          element: <Home />,
+        },
+        {
+          path: "/watch",
+          element: <Video />,
+        },
+      ],
+    },
+  ]);
+  return <RouterProvider router={appRouter} />;
 }
 
 export default App;
