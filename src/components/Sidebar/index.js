@@ -44,7 +44,7 @@ const SideBar = () => {
           <div className="flex items-center">{sideBarSecondList[0].logo}</div>
         </div>
       ) : (
-        <div className={`w-48 sm:w-[10%] left-0 sticky p-2 shadow-sm h-full`}>
+        <div className={`w-48 sm:w-[12%] left-0 sticky p-2 shadow-sm h-full`}>
           <div className="flex items-center">
             {sideBarSecondList[0].logo}
             {sideBarFirstList[0].value}
