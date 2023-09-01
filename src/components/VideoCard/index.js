@@ -3,12 +3,11 @@ import { BsDot } from "react-icons/bs";
 import useDateToDistanceFormat from "../../utils/useDateToDistanceFormat";
 import { Link } from "react-router-dom";
 import useChannelDetails from "../../utils/useChannelDetails";
+import { DUMMY_IMG_URL } from "../../config/constants";
 
 const VideoCard = ({ videosList }) => {
   const { snippet, statistics } = videosList;
   const channelDetails = useChannelDetails(snippet.channelId);
-  const { snippet: snippetDetails } = channelDetails;
-  console.log(snippetDetails);
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   const date = useDateToDistanceFormat(snippet.publishedAt);
   return (
@@ -25,7 +24,11 @@ const VideoCard = ({ videosList }) => {
         />
         <div className="mt-3 flex">
           <img
-            src={snippetDetails && snippetDetails?.thumbnails?.medium?.url}
+            src={
+              channelDetails
+                ? channelDetails?.snippet?.thumbnails?.medium?.url
+                : DUMMY_IMG_URL
+            }
             alt="channel-logo"
             className="h-8 w-8 rounded-full mr-2"
           />

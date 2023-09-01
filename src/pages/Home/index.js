@@ -39,7 +39,7 @@ const Home = () => {
   const SuccessView = () => {
     return (
       <div
-        className={`p-4 mxs:p-2 mxs:flex mxs:flex-wrap overflow-y-auto h-full`}
+        className={`p-4 mxs:p-2 mxs:flex mxs:flex-wrap overflow-y-auto h-[96%]`}
       >
         {apiStaus?.data?.map((each) => (
           <VideoCard key={each?.id} videosList={each} />
@@ -58,7 +58,7 @@ const Home = () => {
     }
   };
   return (
-    <div className={`${isMenuOpen ? "w-[90%]" : "w-full"}`}>
+    <div className={`${isMenuOpen ? "w-[90%]" : "w-full"} h-full`}>
       <RenderResults />
     </div>
   );

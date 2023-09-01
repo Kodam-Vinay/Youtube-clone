@@ -1,9 +1,10 @@
 import { RxHamburgerMenu } from "react-icons/rx";
 import { BsSearch } from "react-icons/bs";
 import { useDispatch } from "react-redux";
-import YoutubeLogo from "../../utils/YoutubeLogo";
+import YoutubeLogo from "../../utils/svgs/YoutubeLogo";
 import { toggleMenu } from "../../Slices/HamburgerSlice";
 import { Link } from "react-router-dom";
+import { DUMMY_IMG_URL } from "../../config/constants";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const Header = () => {
             <BsSearch className="hidden active:block" />
             <input
               type="search"
-              className="hidden sm:block border outline-none focus:border-blue-500 border-gray-200 px-4 pb-1 rounded-l-full w-full h-8"
+              className="hidden sm:block border outline-none focus:border-blue-500 border-gray-200 px-4 rounded-l-full w-full h-8"
               placeholder="search"
             />
           </div>
@@ -42,11 +43,7 @@ const Header = () => {
         </button>
       </div>
       <div className="flex col-span-1">
-        <img
-          src="https://www.ihna.edu.au/blog/wp-content/uploads/2022/10/user-dummy.png"
-          alt="user"
-          className="h-8 w-8"
-        />
+        <img src={DUMMY_IMG_URL} alt="user" className="h-8 w-8" />
       </div>
     </div>
   );

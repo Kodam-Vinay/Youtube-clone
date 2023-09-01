@@ -20,8 +20,6 @@ const useChannelDetails = (channelId) => {
       console.log(error);
     }
   };
-  if (Object.keys(channelDetails).length !== 0) {
-    return channelDetails;
-  }
+  return channelDetails;
 };
 export default useChannelDetails;
