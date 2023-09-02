@@ -141,12 +141,10 @@ const Header = () => {
                   className="outline-none rounded-l-full pl-2 w-full h-8"
                   placeholder="search"
                   onChange={(event) => setSearchInput(event.target.value)}
-                  onFocus={() => setSearchActive(true)}
-                  onBlur={() => setSearchActive(false)}
                 />
               </div>
-              {isSearchActive && searchSuggestions.length > 0 && (
-                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-40 bg-white space-y-1">
+              {searchSuggestions.length > 0 && (
+                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-40 bg-black space-y-1">
                   {searchSuggestions.map((each) => (
                     <SearchSuggestion key={uuidV4()} suggestion={each} />
                   ))}
