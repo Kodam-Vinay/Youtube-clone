@@ -13,11 +13,19 @@ import {
 import { useEffect, useState } from "react";
 import SearchSuggestion from "../SearchSuggestion";
 import { handleCacheData } from "../../Slices/SearchSuggestionSlice";
+import { closeMenu } from "../../Slices/HamburgerSlice";
 
 const Header = () => {
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      window.screen.availWidth >= 640 && setIsSearchClicked(false);
+      window.screen.availWidth < 550 && dispatch(closeMenu());
+    });
+    window.screen.availWidth < 550 && dispatch(closeMenu());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const dispatch = useDispatch();
   const suggestionsList = useSelector((store) => store.suggestions.cacheData);
-
   const handleSlider = () => {
     dispatch(toggleMenu());
   };
@@ -25,10 +33,7 @@ const Header = () => {
   const [searchInput, setSearchInput] = useState("");
   const [isSearchActive, setSearchActive] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
-  // const [screenSize, setScreenSize] = useState("");
-  window.addEventListener("resize", () => {
-    window.screen.availWidth >= 640 && setIsSearchClicked(false);
-  });
+
   useEffect(() => {
     //adding debouncing using setTimeout
     const timerId = setTimeout(() => {
@@ -57,7 +62,6 @@ const Header = () => {
       console.log(error);
     }
   };
-
   return (
     <>
       {!isSearchClicked ? (
@@ -129,7 +133,7 @@ const Header = () => {
             <IoIosArrowBack />
           </button>
           <div className="flex m-auto">
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full">
               <div
                 className={`flex items-center w-full border border-gray-200  rounded-l-full px-2 ${
                   isSearchActive && "border-blue-500"
@@ -146,7 +150,7 @@ const Header = () => {
                 />
               </div>
               {isSearchActive && searchSuggestions.length > 0 && (
-                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-40 bg-white space-y-1">
+                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1">
                   <li>searchSuggestion</li>
                   {searchSuggestions.map((each) => (
                     <SearchSuggestion key={uuidV4()} suggestion={each} />
