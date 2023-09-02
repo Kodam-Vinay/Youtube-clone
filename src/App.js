@@ -8,8 +8,13 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Video from "./pages/Video";
 import Body from "./components/Body";
 
+const onClickContextMenu = (event) => {
+  event.preventDefault();
+  return false;
+};
+
 const RenderLayout = () => (
-  <div className="h-screen overflow-hidden">
+  <div className="h-screen overflow-hidden" onContextMenu={onClickContextMenu}>
     <Provider store={store}>
       <Header />
       <Body />
