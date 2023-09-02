@@ -146,7 +146,7 @@ const Header = () => {
                 />
               </div>
               {isSearchActive && searchSuggestions.length > 0 && (
-                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1">
+                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-40 bg-white space-y-1">
                   {searchSuggestions.map((each) => (
                     <SearchSuggestion key={uuidV4()} suggestion={each} />
                   ))}
