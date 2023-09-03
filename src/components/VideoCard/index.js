@@ -14,8 +14,11 @@ const VideoCard = ({ videosList }) => {
   // console.log(channelDetails);
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   const date = useDateToDistanceFormat(snippet.publishedAt);
+  const onClickVideo = () => {
+    document.title = snippet?.title;
+  };
   return (
-    <Link to={`/watch?v=${videosList?.id}`}>
+    <Link to={`/watch?v=${videosList?.id}`} onClick={onClickVideo}>
       <div
         className={`m-2 w-full mb-4 sm:mb-2 ${
           isMenuOpen ? "mxs:w-60" : "mxs:w-64"
@@ -37,7 +40,7 @@ const VideoCard = ({ videosList }) => {
             className="h-8 w-8 rounded-full mr-2"
           /> */}
 
-          <div className="">
+          <div>
             <p className="font-bold text-sm mb-1">
               {snippet?.title.length > 35
                 ? snippet?.title.slice(0, 35) + "..."

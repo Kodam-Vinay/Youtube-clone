@@ -19,7 +19,7 @@ const Home = () => {
     data: [],
   });
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
-
+  document.title = "Youtube Vinay";
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -59,7 +59,7 @@ const Home = () => {
   const SuccessView = () => {
     return (
       <div
-        className={`p-4 mxs:p-2 mxs:flex mxs:flex-wrap overflow-y-auto h-[96%]`}
+        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
       >
         {apiStaus?.data &&
           apiStaus?.data?.map((each) => (

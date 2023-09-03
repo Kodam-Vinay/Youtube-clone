@@ -33,6 +33,7 @@ const Header = () => {
   const [searchInput, setSearchInput] = useState("");
   const [isSearchActive, setSearchActive] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const [isapiCallMade, setIsApiCallMade] = useState(0);
 
   useEffect(() => {
     //adding debouncing using setTimeout
@@ -52,16 +53,18 @@ const Header = () => {
 
   const getData = async () => {
     try {
-      const response = await fetch(
-        YOUTUBE_SEARCH_SUGGESTIONS_API + searchInput
-      );
+      const apiUrl = YOUTUBE_SEARCH_SUGGESTIONS_API + searchInput;
+
+      const response = await fetch(apiUrl);
       const data = await response.json();
       setSearchSuggestions(data[1]);
       dispatch(handleCacheData({ [searchInput]: data[1] }));
     } catch (error) {
       console.log(error);
+      setIsApiCallMade((prev) => prev + 1);
     }
   };
+
   return (
     <>
       {!isSearchClicked ? (
@@ -82,8 +85,8 @@ const Header = () => {
             <div className="hidden sm:flex w-3/4">
               <div className="flex flex-col w-full">
                 <div
-                  className={`hidden sm:flex sm:items-center w-full border border-gray-200  rounded-l-full px-2 ${
-                    isSearchActive && "border-blue-500"
+                  className={`hidden sm:flex sm:items-center w-full border rounded-l-full px-2 ${
+                    isSearchActive ? "border-blue-500" : "border-gray-200"
                   }`}
                 >
                   {isSearchActive && <BsSearch />}
@@ -124,19 +127,19 @@ const Header = () => {
           </div>
         </div>
       ) : (
-        <div className="sm:hidden py-1 pt-2 px-3 flex items-center">
+        <div className="sm:hidden pt-2 px-3 flex items-center">
           <button
             className="bg-transparent"
             type="button"
             onClick={() => setIsSearchClicked(false)}
           >
-            <IoIosArrowBack />
+            <IoIosArrowBack size={20} className="mr-2" />
           </button>
           <div className="flex m-auto">
             <div className="flex flex-col w-full">
               <div
-                className={`flex items-center w-full border border-gray-200  rounded-l-full px-2 ${
-                  isSearchActive && "border-blue-500"
+                className={`flex items-center w-full border rounded-l-full px-2 ${
+                  isSearchActive ? "border-blue-500" : "border-gray-200"
                 }`}
               >
                 {isSearchActive && <BsSearch />}
@@ -144,19 +147,20 @@ const Header = () => {
                   type="search"
                   className="outline-none rounded-l-full pl-2 w-full h-8"
                   placeholder="search"
-                  onChange={(event) => setSearchInput(event.target.value)}
+                  onChange={(event) => {
+                    setSearchInput(event.target.value);
+                  }}
                   onFocus={() => setSearchActive(true)}
                   onBlur={() => setSearchActive(false)}
                 />
               </div>
-              {isSearchActive && searchSuggestions.length > 0 && (
-                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1">
-                  <li>searchSuggestion</li>
-                  {searchSuggestions.map((each) => (
+              <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1 w-4/5">
+                {isSearchActive &&
+                  searchSuggestions.length > 0 &&
+                  searchSuggestions.map((each) => (
                     <SearchSuggestion key={uuidV4()} suggestion={each} />
                   ))}
-                </ul>
-              )}
+              </ul>
             </div>
             <button
               type="button"
