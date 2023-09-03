@@ -14,7 +14,10 @@ const onClickContextMenu = (event) => {
 };
 
 const RenderLayout = () => (
-  <div className="h-screen overflow-hidden" onContextMenu={onClickContextMenu}>
+  <div
+    className="h-[95vh] mxs:h-screen overflow-hidden"
+    onContextMenu={onClickContextMenu}
+  >
     <Provider store={store}>
       <Header />
       <Body />

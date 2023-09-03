@@ -1,13 +1,17 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BsDot } from "react-icons/bs";
 import useDateToDistanceFormat from "../../utils/useDateToDistanceFormat";
 import { Link } from "react-router-dom";
 import useChannelDetails from "../../utils/useChannelDetails";
 import { DUMMY_IMG_URL } from "../../config/constants";
+import useNumericToAlpha from "../../utils/useNumericToAlpha";
 
 const VideoCard = ({ videosList }) => {
   const { snippet, statistics } = videosList;
-  const channelDetails = useChannelDetails(snippet.channelId);
+  const noOfViews = useNumericToAlpha(statistics?.viewCount);
+  // console.log(snippet.channelId);
+  // const channelDetails = useChannelDetails(snippet.channelId);
+  // console.log(channelDetails);
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   const date = useDateToDistanceFormat(snippet.publishedAt);
   return (
@@ -23,7 +27,7 @@ const VideoCard = ({ videosList }) => {
           className="rounded-lg w-full shadow-lg"
         />
         <div className="mt-3 flex">
-          <img
+          {/* <img
             src={
               channelDetails
                 ? channelDetails?.snippet?.thumbnails?.medium?.url
@@ -31,7 +35,7 @@ const VideoCard = ({ videosList }) => {
             }
             alt="channel-logo"
             className="h-8 w-8 rounded-full mr-2"
-          />
+          /> */}
 
           <div className="">
             <p className="font-bold text-sm mb-1">
@@ -41,7 +45,7 @@ const VideoCard = ({ videosList }) => {
             </p>
             <p className="text-sm">{snippet?.channelTitle}</p>
             <div className="flex items-center space-x-2">
-              <p className="text-sm">{statistics?.viewCount}</p>
+              <p className="text-sm">{noOfViews}</p>
               <BsDot />
               <p className=" text-sm">{date}</p>
             </div>
