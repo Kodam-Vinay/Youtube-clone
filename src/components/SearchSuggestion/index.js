@@ -1,9 +1,17 @@
 import { BsSearch } from "react-icons/bs";
 
-const SearchSuggestion = ({ suggestion, setSearchActive }) => {
+const SearchSuggestion = ({
+  suggestion,
+  setSearchActive,
+  setSearchInput,
+  onClickSearch,
+}) => {
   const onClickSuggestion = () => {
-    console.log("hello");
+    setSearchActive(false);
+    setSearchInput(suggestion);
+    onClickSearch();
   };
+
   return (
     <li
       className="px-2 hover:bg-gray-100 cursor-default flex items-center"

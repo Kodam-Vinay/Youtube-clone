@@ -38,7 +38,6 @@ const Header = () => {
   const [isSearchActive, setSearchActive] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const navigate = useNavigate();
-
   useEffect(() => {
     //adding debouncing using setTimeout
     const timerId = setTimeout(() => {
@@ -115,19 +114,26 @@ const Header = () => {
                     placeholder="search"
                     onChange={(event) => setSearchInput(event.target.value)}
                     onFocus={() => setSearchActive(true)}
-                    onBlur={() => setSearchActive(false)}
+                    value={searchInput}
+                    onBlur={() =>
+                      searchSuggestions
+                        ? setSearchActive(true)
+                        : setSearchActive(false)
+                    }
                     onKeyDown={onPressEnterWithSearch}
                   />
                 </div>
                 {isSearchActive &&
                   searchSuggestions.length > 0 &&
                   searchInput !== "" && (
-                    <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10  xl:w-[30%] bg-white space-y-1">
+                    <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 w-[29%] md:w-1/3 xl:w-[30%] bg-white space-y-1">
                       {searchSuggestions.map((each) => (
                         <SearchSuggestion
                           key={uuidV4()}
                           suggestion={each}
                           setSearchActive={setSearchActive}
+                          setSearchInput={setSearchInput}
+                          onClickSearch={onClickSearch}
                         />
                       ))}
                     </ul>
@@ -174,11 +180,14 @@ const Header = () => {
                   type="search"
                   className="outline-none rounded-l-full pl-2 w-full h-8"
                   placeholder="search"
-                  onChange={(event) => {
-                    setSearchInput(event.target.value);
-                  }}
+                  onChange={(event) => setSearchInput(event.target.value)}
                   onFocus={() => setSearchActive(true)}
-                  onBlur={() => setSearchActive(false)}
+                  value={searchInput}
+                  onBlur={() =>
+                    searchSuggestions
+                      ? setSearchActive(true)
+                      : setSearchActive(false)
+                  }
                   onKeyDown={onPressEnterWithSearch}
                 />
               </div>
@@ -187,7 +196,13 @@ const Header = () => {
                 searchInput !== "" && (
                   <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1 w-4/5">
                     {searchSuggestions.map((each) => (
-                      <SearchSuggestion key={uuidV4()} suggestion={each} />
+                      <SearchSuggestion
+                        key={uuidV4()}
+                        suggestion={each}
+                        setSearchActive={setSearchActive}
+                        setSearchInput={setSearchInput}
+                        onClickSearch={onClickSearch}
+                      />
                     ))}
                   </ul>
                 )}

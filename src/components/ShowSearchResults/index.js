@@ -18,7 +18,7 @@ const ShowSearchResults = ({ searchResults }) => {
         <img
           src={snippet?.thumbnails?.medium?.url}
           alt="youtbeVideoLogo"
-          className="rounded-lg w-24 h-20 xs:w-32 mxs:w-40 sm:w-44 sm:h-28 lg:w-80 lg:h-40 shadow-lg mr-2 lg:mr-4"
+          className="rounded-lg w-24 h-16 xs:w-32 xs:h-20 mxs:w-40 mxs:h-28 sm:w-44 lg:w-72 lg:h-40 shadow-lg mr-2 lg:mr-4"
         />
         <div>
           <p className="font-bold text-sm mb-1">

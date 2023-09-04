@@ -4,6 +4,7 @@ import { closeMenu } from "../../Slices/HamburgerSlice";
 import { useSearchParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { YOUTUBE_VIDEO_DETAILS_API } from "../../config/constants";
+import useVideoDetails from "../../utils/useVideoDetails";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -19,46 +20,35 @@ const Video = () => {
     cityName: "",
     data: {},
   });
-  const [searchId] = useSearchParams();
-  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(closeMenu());
-  });
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const getData = async () => {
     setApiStatus((prev) => ({
       ...prev,
       status: constApiStatus.inProgress,
     }));
-    try {
-      const videoId = searchId.get("v");
-      const apiUrl = YOUTUBE_VIDEO_DETAILS_API.replace(
-        "id=Ks-_Mh1QhMc",
-        `id=${videoId}`
-      );
-      const response = await fetch(apiUrl);
-      if (response.status === 200) {
-        const data = await response.json();
-
+  }, []);
+  const videoDetails = useVideoDetails();
+  useEffect(() => {
+    if (Object.keys(videoDetails).length !== 0) {
+      if (videoDetails?.items[0]) {
         setApiStatus((prev) => ({
           ...prev,
           status: constApiStatus.success,
-          data: data.items[0],
+          data: videoDetails?.items[0],
         }));
       } else {
         setApiStatus((prev) => ({
           ...prev,
-          status: constApiStatus.failure,
-          errorMsg: "Your Making Bad Request",
+          status: apiStaus.failure,
+          errorMsg: "Bad Request",
         }));
       }
-    } catch (error) {
-      console.log(error);
     }
-  };
+  }, [videoDetails]);
+
+  useEffect(() => {
+    dispatch(closeMenu());
+  });
+  const dispatch = useDispatch();
 
   const SuccessView = () => {
     const { id, snippet, statistics } = apiStaus.data;
