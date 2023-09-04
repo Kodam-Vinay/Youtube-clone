@@ -7,6 +7,7 @@ import store from "./utils/store";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Video from "./pages/Video";
 import Body from "./components/Body";
+import SearchResults from "./pages/SearchResults";
 
 const onClickContextMenu = (event) => {
   event.preventDefault();
@@ -38,6 +39,10 @@ function App() {
         {
           path: "/watch",
           element: <Video />,
+        },
+        {
+          path: "/search",
+          element: <SearchResults />,
         },
       ],
     },

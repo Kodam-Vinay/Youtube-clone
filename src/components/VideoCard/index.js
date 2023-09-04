@@ -1,9 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BsDot } from "react-icons/bs";
 import useDateToDistanceFormat from "../../utils/useDateToDistanceFormat";
 import { Link } from "react-router-dom";
-import useChannelDetails from "../../utils/useChannelDetails";
-import { DUMMY_IMG_URL } from "../../config/constants";
+// import useChannelDetails from "../../utils/useChannelDetails";
+// import { DUMMY_IMG_URL } from "../../config/constants";
 import useNumericToAlpha from "../../utils/useNumericToAlpha";
 
 const VideoCard = ({ videosList }) => {
@@ -43,7 +43,7 @@ const VideoCard = ({ videosList }) => {
           <div>
             <p className="font-bold text-sm mb-1">
               {snippet?.title.length > 35
-                ? snippet?.title.slice(0, 35) + "..."
+                ? snippet?.title.slice(0, 45) + "..."
                 : snippet?.title}
             </p>
             <p className="text-sm">{snippet?.channelTitle}</p>

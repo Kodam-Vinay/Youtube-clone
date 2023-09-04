@@ -5,14 +5,17 @@ import { v4 as uuidV4 } from "uuid";
 import { IoIosArrowBack } from "react-icons/io";
 import YoutubeLogo from "../../utils/svgs/YoutubeLogo";
 import { toggleMenu } from "../../Slices/HamburgerSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DUMMY_IMG_URL,
   YOUTUBE_SEARCH_SUGGESTIONS_API,
 } from "../../config/constants";
 import { useEffect, useState } from "react";
 import SearchSuggestion from "../SearchSuggestion";
-import { handleCacheData } from "../../Slices/SearchSuggestionSlice";
+import {
+  handleCacheData,
+  makeSearchClicked,
+} from "../../Slices/SearchSuggestionSlice";
 import { closeMenu } from "../../Slices/HamburgerSlice";
 
 const Header = () => {
@@ -26,6 +29,7 @@ const Header = () => {
   }, []);
   const dispatch = useDispatch();
   const suggestionsList = useSelector((store) => store.suggestions.cacheData);
+
   const handleSlider = () => {
     dispatch(toggleMenu());
   };
@@ -33,7 +37,7 @@ const Header = () => {
   const [searchInput, setSearchInput] = useState("");
   const [isSearchActive, setSearchActive] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
-  const [isapiCallMade, setIsApiCallMade] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     //adding debouncing using setTimeout
@@ -61,7 +65,22 @@ const Header = () => {
       dispatch(handleCacheData({ [searchInput]: data[1] }));
     } catch (error) {
       console.log(error);
-      setIsApiCallMade((prev) => prev + 1);
+    }
+  };
+
+  const onClickSearch = () => {
+    if (searchInput !== "") {
+      navigate(`/search?query=${searchInput}`);
+      dispatch(makeSearchClicked(searchInput));
+    }
+  };
+
+  const onPressEnterWithSearch = (event) => {
+    if (event.key === "Enter") {
+      if (searchInput !== "") {
+        onClickSearch();
+        setSearchActive(false);
+      }
     }
   };
 
@@ -97,19 +116,27 @@ const Header = () => {
                     onChange={(event) => setSearchInput(event.target.value)}
                     onFocus={() => setSearchActive(true)}
                     onBlur={() => setSearchActive(false)}
+                    onKeyDown={onPressEnterWithSearch}
                   />
                 </div>
-                {isSearchActive && searchSuggestions.length > 0 && (
-                  <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10  xl:w-[30%] bg-white space-y-1">
-                    {searchSuggestions.map((each) => (
-                      <SearchSuggestion key={uuidV4()} suggestion={each} />
-                    ))}
-                  </ul>
-                )}
+                {isSearchActive &&
+                  searchSuggestions.length > 0 &&
+                  searchInput !== "" && (
+                    <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10  xl:w-[30%] bg-white space-y-1">
+                      {searchSuggestions.map((each) => (
+                        <SearchSuggestion
+                          key={uuidV4()}
+                          suggestion={each}
+                          setSearchActive={setSearchActive}
+                        />
+                      ))}
+                    </ul>
+                  )}
               </div>
               <button
                 type="button"
                 className="flex items-center justify-center rounded-r-full border border-gray-200 p-4 h-8 bg-gray-100 hover:bg-gray-200"
+                onClick={onClickSearch}
               >
                 <BsSearch />
               </button>
@@ -152,19 +179,23 @@ const Header = () => {
                   }}
                   onFocus={() => setSearchActive(true)}
                   onBlur={() => setSearchActive(false)}
+                  onKeyDown={onPressEnterWithSearch}
                 />
               </div>
-              {isSearchActive && searchSuggestions.length > 0 && (
-                <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1 w-4/5">
-                  {searchSuggestions.map((each) => (
-                    <SearchSuggestion key={uuidV4()} suggestion={each} />
-                  ))}
-                </ul>
-              )}
+              {isSearchActive &&
+                searchSuggestions.length > 0 &&
+                searchInput !== "" && (
+                  <ul className="p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 bg-white space-y-1 w-4/5">
+                    {searchSuggestions.map((each) => (
+                      <SearchSuggestion key={uuidV4()} suggestion={each} />
+                    ))}
+                  </ul>
+                )}
             </div>
             <button
               type="button"
               className="flex items-center justify-center rounded-r-full border border-gray-200 p-4 h-8 bg-gray-100 hover:bg-gray-200"
+              onClick={onClickSearch}
             >
               <BsSearch />
             </button>
