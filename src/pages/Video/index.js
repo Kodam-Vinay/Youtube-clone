@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { closeMenu } from "../../Slices/HamburgerSlice";
 import ReactPlayer from "react-player";
 import { YOUTUBE_VIDEO_PLAYER_URL } from "../../config/constants";
@@ -17,6 +17,7 @@ const Video = () => {
     errorMsg: "",
     data: {},
   });
+  const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   useEffect(() => {
     dispatch(closeMenu());
   });
@@ -57,7 +58,9 @@ const Video = () => {
             width="100%"
             height="100%"
             controls
-            className="overflow-hidden rounded-md"
+            className={`overflow-hidden rounded-md shadow-2xl ${
+              isDarkMode ? "border border-white" : ""
+            }`}
             playing
           />
         </div>
