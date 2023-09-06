@@ -4,7 +4,7 @@ import numeral from "numeral";
 const useNumericToAlpha = (number) => {
   useEffect(() => {
     getResult();
-  }, []);
+  }, [number]);
   const [numberToAlpha, setNumberToAlpha] = useState("");
   const getResult = () => {
     if (number.length === 6) {

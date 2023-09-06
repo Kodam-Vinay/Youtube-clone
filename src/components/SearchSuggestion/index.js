@@ -1,4 +1,5 @@
 import { BsSearch } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 const SearchSuggestion = ({
   suggestion,
@@ -7,17 +8,21 @@ const SearchSuggestion = ({
   onClickSearch,
 }) => {
   const onClickSuggestion = () => {
-    setSearchActive(false);
     setSearchInput(suggestion);
-    onClickSearch();
+    setSearchActive(false);
+    onClickSearch(suggestion);
   };
-
+  const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   return (
     <li
-      className="px-2 hover:bg-gray-100 cursor-default flex items-center"
+      className={`px-2 cursor-default flex items-center rounded-sm ${
+        isDarkMode
+          ? "text-white hover:bg-slate-800"
+          : "text-black hover:bg-gray-100"
+      }`}
       onClick={onClickSuggestion}
     >
-      <BsSearch />
+      <BsSearch color={isDarkMode ? "white" : "black"} />
       <span className="ml-2">{suggestion}</span>
     </li>
   );

@@ -12,11 +12,13 @@ const SearchSuggestionSlice = createSlice({
       state.cacheData = { ...state.cacheData, ...action.payload };
     },
     makeSearchClicked: (state, action) => {
-      state.isSearchClicked = true;
+      state.isSearchClicked = action.payload;
+    },
+    storeSearchInput: (state, action) => {
       state.searchInput = action.payload;
     },
   },
 });
-export const { handleCacheData, makeSearchClicked } =
+export const { handleCacheData, makeSearchClicked, storeSearchInput } =
   SearchSuggestionSlice.actions;
 export default SearchSuggestionSlice.reducer;

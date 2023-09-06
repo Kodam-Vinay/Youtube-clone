@@ -13,6 +13,7 @@ const VideoCard = ({ videosList }) => {
   // const channelDetails = useChannelDetails(snippet.channelId);
   // console.log(channelDetails);
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
+  const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   const date = useDateToDistanceFormat(snippet.publishedAt);
   const onClickVideo = () => {
     document.title = snippet?.title;
@@ -40,7 +41,7 @@ const VideoCard = ({ videosList }) => {
             className="h-8 w-8 rounded-full mr-2"
           /> */}
 
-          <div>
+          <div className={`${isDarkMode ? "text-white" : "text-black"}`}>
             <p className="font-bold text-sm mb-1">
               {snippet?.title.length > 35
                 ? snippet?.title.slice(0, 45) + "..."

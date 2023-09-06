@@ -14,17 +14,19 @@ const onClickContextMenu = (event) => {
   return false;
 };
 
-const RenderLayout = () => (
-  <div
-    className="h-[95vh] mxs:h-screen overflow-hidden"
-    onContextMenu={onClickContextMenu}
-  >
-    <Provider store={store}>
-      <Header />
-      <Body />
-    </Provider>
-  </div>
-);
+const RenderLayout = () => {
+  return (
+    <div
+      className="h-[95vh] mxs:h-screen overflow-hidden"
+      onContextMenu={onClickContextMenu}
+    >
+      <Provider store={store}>
+        <Header />
+        <Body />
+      </Provider>
+    </div>
+  );
+};
 
 function App() {
   const appRouter = createBrowserRouter([

@@ -15,9 +15,9 @@ const Home = () => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
     errorMsg: "",
-    cityName: "",
     data: [],
   });
+
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   document.title = "Youtube Vinay";
   useEffect(() => {
@@ -79,7 +79,7 @@ const Home = () => {
     }
   };
   return (
-    <div className={`${isMenuOpen ? "w-[90%]" : "w-full"} h-full`}>
+    <div className={`${isMenuOpen ? "w-full mxs:w-[90%] " : "w-full"} h-full`}>
       <RenderResults />
     </div>
   );
