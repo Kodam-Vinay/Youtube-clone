@@ -64,6 +64,7 @@ const Video = () => {
             playing
           />
         </div>
+        <div className="details"></div>
       </div>
     );
   };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { GoVideo } from "react-icons/go";
 import { BsMusicNote } from "react-icons/bs";
@@ -6,6 +6,7 @@ import { CiStreamOn } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import NavigationLink from "../NavigationLink";
 import { v4 as uuidV4 } from "uuid";
+import { GrGamepad } from "react-icons/gr";
 import "./index.css";
 
 const sideBarFirstList = [
@@ -19,7 +20,7 @@ const sideBarFirstList = [
     id: "music",
     value: "Music",
     logo: <BsMusicNote />,
-    url: "/shorts",
+    url: "/music",
   },
   {
     id: "movies",
@@ -28,12 +29,19 @@ const sideBarFirstList = [
     url: "/movies",
   },
   {
+    id: "gaming",
+    value: "Gaming",
+    logo: <GrGamepad />,
+    url: "/gaming",
+  },
+  {
     id: "live",
     value: "Live",
     logo: <CiStreamOn />,
     url: "/live",
   },
 ];
+
 const sideBarSecondList = [
   {
     id: "home",
@@ -43,7 +51,7 @@ const sideBarSecondList = [
   {
     id: "music",
     logo: <BsMusicNote />,
-    url: "/shorts",
+    url: "/music",
   },
   {
     id: "movies",
@@ -51,13 +59,22 @@ const sideBarSecondList = [
     url: "/movies",
   },
   {
+    id: "gaming",
+    logo: <GrGamepad />,
+    url: "/gaming",
+  },
+  {
     id: "live",
     logo: <CiStreamOn />,
-    url: "/live",
+    url: "/",
   },
 ];
 
 const SideBar = () => {
+  const [activeIds, setActiveIds] = useState({
+    id1: sideBarFirstList[0].id,
+    id2: sideBarSecondList[0].id,
+  });
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   return (

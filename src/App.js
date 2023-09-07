@@ -8,6 +8,10 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Video from "./pages/Video";
 import Body from "./components/Body";
 import SearchResults from "./pages/SearchResults";
+import Music from "./pages/Music";
+import Movies from "./pages/Movies";
+import ErrorPage from "./pages/ErrorPage";
+import Gaming from "./pages/Gaming";
 
 const onClickContextMenu = (event) => {
   event.preventDefault();
@@ -33,14 +37,27 @@ function App() {
     {
       path: "/",
       element: <RenderLayout />,
+      errorElement: <ErrorPage />,
       children: [
         {
           path: "",
           element: <Home />,
         },
         {
+          path: "/music",
+          element: <Music />,
+        },
+        {
+          path: "/movies",
+          element: <Movies />,
+        },
+        {
           path: "/watch",
           element: <Video />,
+        },
+        {
+          path: "/gaming",
+          element: <Gaming />,
         },
         {
           path: "/search",

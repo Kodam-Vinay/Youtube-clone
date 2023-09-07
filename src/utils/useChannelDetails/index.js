@@ -1,33 +1,31 @@
 import { useEffect, useState } from "react";
 import { CHANNEL_DETAILS_API } from "../../config/constants";
-import { useSelector } from "react-redux";
 
-const useChannelDetails = () => {
-  const channelList = useSelector((store) => store.channelDetails.channels);
-
+const useChannelDetails = (channelList) => {
   useEffect(() => {
     getChannelDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [channelList]);
 
   const [channelDetails, setChannelDetails] = useState([]);
-  const getChannelDetails = () => {
-    channelList.length > 0 &&
-      channelList.map(async (each) => {
-        try {
-          const apiUrl = CHANNEL_DETAILS_API.replace(
-            "id=UCjJKg01HAP01xCLVhDmnLhw",
-            `id=${each}`
-          );
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-          console.log(data);
-          setChannelDetails(data?.items[0]);
-        } catch (error) {
-          console.log(error);
+  const getChannelDetails = async () => {
+    if (channelList.length > 0) {
+      const channelsIdList = channelList.join("%2C");
+      const apiUrl = CHANNEL_DETAILS_API.replace(
+        "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+        channelsIdList
+      );
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        if (response.status === 200) {
+          setChannelDetails(data?.items);
         }
-      });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
-  return channelDetails;
+  return channelDetails.length > 0 ? channelDetails : "";
 };
 export default useChannelDetails;

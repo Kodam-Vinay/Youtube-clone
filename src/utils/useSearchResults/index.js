@@ -19,7 +19,8 @@ const useSearchResults = () => {
     const apiUrl = SEARCH_RESULTS_API.replace("q=vinay", `q=${searchInput}`);
     const response = await fetch(apiUrl);
     const data = await response.json();
-    setSearchResults(data?.items);
+    const videoIds = data?.items?.map((each) => each?.id?.videoId);
+    setSearchResults(videoIds);
   };
   return searchResults;
 };

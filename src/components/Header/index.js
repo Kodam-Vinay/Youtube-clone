@@ -71,15 +71,18 @@ const Header = () => {
   };
 
   const onClickSearch = (suggestion) => {
-    if (suggestion) {
-      navigate(`/search?query=${suggestion}`);
-      dispatch(makeSearchClicked(true));
-      dispatch(storeSearchInput(suggestion));
-    } else if (searchInput !== "") {
-      navigate(`/search?query=${searchInput}`);
-      dispatch(makeSearchClicked(true));
-      dispatch(storeSearchInput(searchInput));
+    if (searchInput !== "") {
+      if (typeof suggestion === "string") {
+        navigate(`/search?query=${suggestion}`);
+        dispatch(makeSearchClicked(true));
+        dispatch(storeSearchInput(suggestion));
+      } else if (searchInput !== "") {
+        navigate(`/search?query=${searchInput}`);
+        dispatch(makeSearchClicked(true));
+        dispatch(storeSearchInput(searchInput));
+      }
     }
+    setSearchActive(false);
   };
 
   const onPressEnterWithSearch = (event) => {

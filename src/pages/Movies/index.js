@@ -12,7 +12,7 @@ const constApiStatus = {
   failure: "FAILURE",
 };
 
-const Home = () => {
+const Movies = () => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
     data: {},
@@ -20,14 +20,17 @@ const Home = () => {
 
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
 
-  document.title = "Youtube Vinay";
+  document.title = "Movies";
   useEffect(() => {
     setApiStatus((prev) => ({
       ...prev,
       status: constApiStatus.inProgress,
     }));
   }, []);
-  const videosList = useGetVideosList(POPULAR_VIDEOS_API);
+  const videosList = useGetVideosList(
+    POPULAR_VIDEOS_API +
+      "&videoCategoryId=24".replace("maxResults=50", "maxResults=30")
+  );
   useEffect(() => {
     if (videosList?.videos?.length > 0) {
       setApiStatus((prev) => ({
@@ -95,4 +98,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Movies;
