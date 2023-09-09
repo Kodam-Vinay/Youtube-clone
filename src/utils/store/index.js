@@ -3,6 +3,7 @@ import HamburgerSlice from "../../Slices/HamburgerSlice";
 import SearchSuggestionSlice from "../../Slices/SearchSuggestionSlice";
 import ChannelDetailsSlice from "../../Slices/ChannelDetailsSlice";
 import ThemeModeSlice from "../../Slices/ThemeModeSlice";
+import LikedAndSavedVideosSlice from "../../Slices/LikedAndSavedVideosSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     suggestions: SearchSuggestionSlice,
     channelDetails: ChannelDetailsSlice,
     theme: ThemeModeSlice,
+    storeVideo: LikedAndSavedVideosSlice,
   },
 });
 

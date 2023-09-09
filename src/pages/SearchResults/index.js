@@ -13,13 +13,13 @@ const constApiStatus = {
 };
 
 const SearchResults = () => {
-  let [apiStaus1, setApiStatus1] = useState({
+  const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
     data: [],
   });
-  const [searchVideosList, setSearchVideosList] = useState([]);
+
   useEffect(() => {
-    setApiStatus1((prev) => ({
+    setApiStatus((prev) => ({
       ...prev,
       status: constApiStatus.inProgress,
     }));
@@ -27,29 +27,58 @@ const SearchResults = () => {
   const results = useSearchResults();
   useEffect(() => {
     if (results.length > 0) {
-      setApiStatus1((prev) => ({
+      setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.success,
         data: results,
       }));
-    } else {
-      setApiStatus1((prev) => ({
+    } else if (results >= 400) {
+      setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
+      }));
+    } else {
+      setApiStatus((prev) => ({
+        ...prev,
+        status: constApiStatus.inProgress,
       }));
     }
   }, [results]);
   const FirstSuccessView = () => {
-    if (apiStaus1.data.includes(undefined)) {
-      const index = apiStaus1.data.indexOf(undefined);
-      apiStaus1.data.splice(index, 1);
+    const videosList = useVideoDetailsWithOneAPi(apiStaus.data);
+    const videos = videosList?.videos;
+    const channel = videosList?.channelDetails;
+    if (
+      typeof videos === "object" &&
+      videos.length > 0 &&
+      typeof channel === "object" &&
+      channel.length > 0
+    ) {
+      const fullDetails = videos.map((each) => {
+        let channelId = channel.find(
+          (eachItem) => eachItem.id === each?.snippet?.channelId
+        );
+        if (channelId) {
+          each = { ...each, channelDetails: channelId };
+        }
+        return each;
+      });
+      return (
+        <div className="flex flex-col space-y-4">
+          {fullDetails.length > 0 &&
+            fullDetails.map((each) => (
+              <ShowSearchResults key={uuidV4()} searchResults={each} />
+            ))}
+        </div>
+      );
+    } else if (videosList >= 400 || videosList.error >= 400) {
+      setApiStatus((prev) => ({
+        ...prev,
+        status: constApiStatus.failure,
+      }));
+    } else {
+      return null;
     }
-    const videosList = useVideoDetailsWithOneAPi(apiStaus1.data);
-    useEffect(() => {
-      if (videosList.length > 0) {
-        setSearchVideosList(videosList);
-      }
-    }, []);
   };
 
   const FailureView = () => {
@@ -57,7 +86,7 @@ const SearchResults = () => {
   };
 
   const RenderResults = () => {
-    switch (apiStaus1.status) {
+    switch (apiStaus.status) {
       case constApiStatus.inProgress:
         return <h1>Loading.....</h1>;
       case constApiStatus.success:
@@ -68,20 +97,9 @@ const SearchResults = () => {
         return null;
     }
   };
-  const RenderSuccessView = () => {
-    return (
-      <>
-        {searchVideosList.length > 0 &&
-          searchVideosList.map((each) => (
-            <ShowSearchResults key={uuidV4()} searchResults={each} />
-          ))}
-      </>
-    );
-  };
   return (
     <div className="p-2 mxs:p-4 flex flex-col overflow-y-auto h-[96%] pb-10 w-full space-y-2">
       {RenderResults()}
-      {apiStaus1.status === constApiStatus.success && RenderSuccessView()}
     </div>
   );
 };

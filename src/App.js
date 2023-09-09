@@ -12,6 +12,11 @@ import Music from "./pages/Music";
 import Movies from "./pages/Movies";
 import ErrorPage from "./pages/ErrorPage";
 import Gaming from "./pages/Gaming";
+import LikedVideos from "./pages/LikedVideos";
+import DisLikedVideos from "./pages/DisLikedVideos";
+import SavedVideos from "./pages/SavedVideos";
+import Live from "./pages/Live";
+import InvalidRoute from "./pages/InvalidRoute";
 
 const onClickContextMenu = (event) => {
   event.preventDefault();
@@ -37,7 +42,6 @@ function App() {
     {
       path: "/",
       element: <RenderLayout />,
-      errorElement: <ErrorPage />,
       children: [
         {
           path: "",
@@ -60,8 +64,28 @@ function App() {
           element: <Gaming />,
         },
         {
+          path: "/liked",
+          element: <LikedVideos />,
+        },
+        {
+          path: "/disliked",
+          element: <DisLikedVideos />,
+        },
+        {
+          path: "/saved",
+          element: <SavedVideos />,
+        },
+        {
+          path: "/live",
+          element: <Live />,
+        },
+        {
           path: "/search",
           element: <SearchResults />,
+        },
+        {
+          path: "/*",
+          element: <InvalidRoute />,
         },
       ],
     },

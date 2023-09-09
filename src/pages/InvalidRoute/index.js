@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { CLOUDINARY_IMAGE_URL } from "../../config/constants";
 
-const ErrorPage = () => {
+const InvalidRoute = () => {
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   return (
     <div
@@ -15,14 +15,11 @@ const ErrorPage = () => {
         alt="error"
         className="w-64"
       />
-      <h1 className="text-xl font-bold text-center">
-        Sorry, The API Key May got Expired, Please Try Again After{" "}
-        <span className="text-2xl">24 Hrs...</span>
-      </h1>
+      <h1 className="text-2xl font-bold text-center">Invalid Url</h1>
       <Link to="/">
         <button className="border px-2 py-1 rounded-md">Home</button>
       </Link>
     </div>
   );
 };
-export default ErrorPage;
+export default InvalidRoute;

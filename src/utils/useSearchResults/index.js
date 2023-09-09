@@ -12,16 +12,25 @@ const useSearchResults = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearchClicked, searchInput]);
   const [searchResults, setSearchResults] = useState([]);
+  const [error, setError] = useState(0);
   const getData = async () => {
     if (searchInput === "") {
       return null;
     }
-    const apiUrl = SEARCH_RESULTS_API.replace("q=vinay", `q=${searchInput}`);
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    const videoIds = data?.items?.map((each) => each?.id?.videoId);
-    setSearchResults(videoIds);
+    try {
+      const apiUrl = SEARCH_RESULTS_API.replace("q=vinay", `q=${searchInput}`);
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      if (response.ok) {
+        const videoIds = data?.items?.map((each) => each?.id?.videoId);
+        setSearchResults(videoIds);
+      } else {
+        setError(response.status);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
-  return searchResults;
+  return searchResults.length > 0 ? searchResults : error;
 };
 export default useSearchResults;

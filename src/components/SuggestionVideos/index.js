@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { POPULAR_VIDEOS_API } from "../../config/constants";
-import VideoCard from "../../components/VideoCard";
-import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
-import ErrorPage from "../ErrorPage";
+import ErrorPage from "../../pages/ErrorPage";
+import ShowSearchResults from "../ShowSearchResults";
+import { RingLoader } from "react-spinners";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -12,15 +12,12 @@ const constApiStatus = {
   failure: "FAILURE",
 };
 
-const Movies = () => {
+const SuggestionVideos = ({ categoryId }) => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
     data: {},
   });
 
-  const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
-
-  document.title = "Movies";
   useEffect(() => {
     setApiStatus((prev) => ({
       ...prev,
@@ -28,8 +25,10 @@ const Movies = () => {
     }));
   }, []);
   const videosList = useGetVideosList(
-    POPULAR_VIDEOS_API +
-      "&videoCategoryId=24".replace("maxResults=50", "maxResults=30")
+    (POPULAR_VIDEOS_API + "&videoCategoryId=" + categoryId).replace(
+      "maxResults=50",
+      "maxResults=20"
+    )
   );
   useEffect(() => {
     if (videosList?.videos?.length > 0) {
@@ -64,12 +63,10 @@ const Movies = () => {
       return each;
     });
     return (
-      <div
-        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
-      >
+      <div className="flex flex-col h-[96%] space-y-2 w-full">
         {fullDetails.length > 0 &&
           fullDetails?.map((each) => (
-            <VideoCard key={each?.id} videosList={each} />
+            <ShowSearchResults key={each?.id} searchResults={each} />
           ))}
       </div>
     );
@@ -81,7 +78,11 @@ const Movies = () => {
   const RenderResults = () => {
     switch (apiStaus.status) {
       case constApiStatus.inProgress:
-        return <h1>Loading.....</h1>;
+        return (
+          <div className="w-full h-full flex items-center justify-center">
+            <RingLoader />
+          </div>
+        );
       case constApiStatus.success:
         return <SuccessView />;
       case constApiStatus.failure:
@@ -91,10 +92,10 @@ const Movies = () => {
     }
   };
   return (
-    <div className={`${isMenuOpen ? "w-full mxs:w-[90%] " : "w-full"} h-full`}>
+    <div className="w-full h-full">
       <RenderResults />
     </div>
   );
 };
 
-export default Movies;
+export default SuggestionVideos;

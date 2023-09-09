@@ -7,11 +7,13 @@ const useNumericToAlpha = (number) => {
   }, [number]);
   const [numberToAlpha, setNumberToAlpha] = useState("");
   const getResult = () => {
-    if (number.length === 6) {
-      setNumberToAlpha(numeral(number).format("0 a").toUpperCase());
-      return numberToAlpha;
+    if (number !== undefined) {
+      if (number.length === 6) {
+        setNumberToAlpha(numeral(number).format("0 a").toUpperCase());
+        return numberToAlpha;
+      }
+      setNumberToAlpha(numeral(number).format("0.0 a").toUpperCase());
     }
-    setNumberToAlpha(numeral(number).format("0.0 a").toUpperCase());
   };
 
   return numberToAlpha;
