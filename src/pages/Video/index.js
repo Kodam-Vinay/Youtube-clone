@@ -54,11 +54,11 @@ const Video = () => {
 
   useEffect(() => {
     if (Object.keys(videoDetails).length !== 0) {
-      if (videoDetails?.items[0]) {
+      if (videoDetails) {
         setApiStatus((prev) => ({
           ...prev,
           status: constApiStatus.success,
-          data: videoDetails?.items[0],
+          data: videoDetails,
         }));
       } else {
         setApiStatus((prev) => ({
@@ -72,19 +72,6 @@ const Video = () => {
 
   const channelDetails = useGetSingleChannelDetails(
     apiStaus?.data?.snippet?.channelId
-  );
-
-  const checkThisVideoIsSaved = useMemo(
-    () => savedVideos.find((each) => each?.id === videoDetails?.id),
-    [savedVideos]
-  );
-  const checkThisVideoIsLiked = useMemo(
-    () => likedVideos.find((each) => each?.id === videoDetails?.id),
-    [likedVideos]
-  );
-  const checkThisVideoIsDisLiked = useMemo(
-    () => unlikedVideos.find((each) => each?.id === videoDetails?.id),
-    [unlikedVideos]
   );
 
   const dispatch = useDispatch();
@@ -116,6 +103,19 @@ const Video = () => {
     }
   };
   const SuccessView = () => {
+    const checkThisVideoIsSaved = useMemo(
+      () => savedVideos.find((each) => each?.id === videoDetails?.id),
+      [savedVideos]
+    );
+    const checkThisVideoIsLiked = useMemo(
+      () => likedVideos.find((each) => each?.id === videoDetails?.id),
+      [likedVideos]
+    );
+    const checkThisVideoIsDisLiked = useMemo(
+      () => unlikedVideos.find((each) => each?.id === videoDetails?.id),
+      [unlikedVideos]
+    );
+
     const { id, snippet, statistics } = apiStaus.data;
     const likesCount = useNumericToAlpha(statistics?.likeCount);
     return (
@@ -130,7 +130,7 @@ const Video = () => {
               className={`overflow-hidden rounded-md shadow-2xl ${
                 isDarkMode ? "border border-white" : ""
               }`}
-              // playing
+              playing
             />
           </div>
           <div

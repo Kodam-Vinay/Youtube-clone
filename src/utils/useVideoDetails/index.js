@@ -24,13 +24,13 @@ const useVideoDetails = (id) => {
         const response = await fetch(apiUrl);
         if (response.status === 200) {
           const data = await response.json();
-          setVideoInfo(data);
+          setVideoInfo(data?.items[0]);
         }
       }
     } catch (error) {
       console.log(error);
     }
   };
-  return videoInfo;
+  return Object.keys(videoInfo).length > 0 ? videoInfo : "";
 };
 export default useVideoDetails;

@@ -7,15 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { DUMMY_IMG_URL } from "../../config/constants";
 
 const ShowSearchResults = ({ searchResults }) => {
-  const searchInput = useSelector((store) => store.suggestions.searchInput);
-  document.title = searchInput + " - YouTube Vinay";
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   const dispatch = useDispatch();
   const { snippet, id, statistics } = searchResults;
   const { channelDetails } = searchResults;
   const { snippet: channelSnippet } = channelDetails;
-  const { videoId } = id;
-  const date = useDateToDistanceFormat(snippet.publishedAt);
+  const date = useDateToDistanceFormat(snippet?.publishedAt);
   const onClickVideo = () => {
     dispatch(makeSearchClicked(false));
   };
@@ -23,7 +20,10 @@ const ShowSearchResults = ({ searchResults }) => {
   const location = useLocation();
   const SuccessView = () => {
     return (
-      <Link to={`/watch?v=${videoId}`} onClick={onClickVideo}>
+      <Link
+        to={`/watch?v=${location.pathname === "/search" ? id?.videoId : id}`}
+        onClick={onClickVideo}
+      >
         <div className="flex">
           <img
             src={snippet?.thumbnails?.medium?.url}
