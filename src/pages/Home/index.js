@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { POPULAR_VIDEOS_API } from "../../config/constants";
 import VideoCard from "../../components/VideoCard";
 import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
+import Filters from "../../components/Filters";
+import FilterContext from "../../utils/FilterContext";
+import { filterData, getFullDetails } from "../../helper";
+import NoVideos from "../../components/NoVideos";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -18,7 +22,7 @@ const Home = () => {
     data: {},
   });
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
-
+  const { activeFilterButton } = useContext(FilterContext);
   document.title = "Youtube Vinay";
   useEffect(() => {
     setApiStatus((prev) => ({
@@ -50,23 +54,24 @@ const Home = () => {
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
-    const fullDetails = videos.map((each) => {
-      let channelId = channel.find(
-        (eachItem) => eachItem.id === each?.snippet?.channelId
-      );
-      if (channelId) {
-        each = { ...each, channelDetails: channelId };
-      }
-      return each;
-    });
+    const fullDetails = getFullDetails(videos, channel);
+    const List = filterData(fullDetails, activeFilterButton);
     return (
-      <div
-        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
-      >
-        {fullDetails.length > 0 &&
-          fullDetails?.map((each) => (
-            <VideoCard key={each?.id} videosList={each} />
-          ))}
+      <div className="w-full h-full">
+        <Filters />
+        <div
+          className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
+        >
+          {activeFilterButton === "0" && fullDetails.length > 0 ? (
+            fullDetails?.map((each) => (
+              <VideoCard key={each?.id} videosList={each} />
+            ))
+          ) : List.length > 0 ? (
+            List?.map((each) => <VideoCard key={each?.id} videosList={each} />)
+          ) : (
+            <NoVideos />
+          )}
+        </div>
       </div>
     );
   };

@@ -13,6 +13,7 @@ const useVideoDetails = (id) => {
     (store) => store.suggestions.isSearchClicked
   );
   const [videoInfo, setVideoInfo] = useState({});
+  const [error, setError] = useState("");
   const getData = async () => {
     try {
       const videoId = isSearchClicked ? id : searchId.get("v");
@@ -25,12 +26,14 @@ const useVideoDetails = (id) => {
         if (response.status === 200) {
           const data = await response.json();
           setVideoInfo(data?.items[0]);
+        } else {
+          setError(response.status);
         }
       }
     } catch (error) {
       console.log(error);
     }
   };
-  return Object.keys(videoInfo).length > 0 ? videoInfo : "";
+  return Object.keys(videoInfo).length > 0 ? videoInfo : error;
 };
 export default useVideoDetails;

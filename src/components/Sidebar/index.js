@@ -7,9 +7,11 @@ import { useSelector } from "react-redux";
 import NavigationLink from "../NavigationLink";
 import { v4 as uuidV4 } from "uuid";
 import { GrGamepad } from "react-icons/gr";
+import { MdSportsCricket } from "react-icons/md";
 import "./index.css";
 import { BiListPlus } from "react-icons/bi";
 import { useLocation } from "react-router-dom";
+import { GiNewspaper } from "react-icons/gi";
 
 const sideBarFirstList = [
   {
@@ -25,12 +27,6 @@ const sideBarFirstList = [
     url: "/music",
   },
   {
-    id: "movies",
-    value: "Movies",
-    logo: <GoVideo />,
-    url: "/movies",
-  },
-  {
     id: "gaming",
     value: "Gaming",
     logo: <GrGamepad />,
@@ -41,6 +37,18 @@ const sideBarFirstList = [
     value: "Live",
     logo: <CiStreamOn />,
     url: "/live",
+  },
+  {
+    id: "sports",
+    value: "Sports",
+    logo: <MdSportsCricket />,
+    url: "/sports",
+  },
+  {
+    id: "news",
+    value: "News",
+    logo: <GiNewspaper />,
+    url: "/news",
   },
   {
     id: "liked",
@@ -74,11 +82,6 @@ const sideBarSecondList = [
     url: "/music",
   },
   {
-    id: "movies",
-    logo: <GoVideo />,
-    url: "/movies",
-  },
-  {
     id: "gaming",
     logo: <GrGamepad />,
     url: "/gaming",
@@ -87,6 +90,16 @@ const sideBarSecondList = [
     id: "live",
     logo: <CiStreamOn />,
     url: "/live",
+  },
+  {
+    id: "sports",
+    logo: <MdSportsCricket />,
+    url: "/sports",
+  },
+  {
+    id: "news",
+    logo: <GiNewspaper />,
+    url: "/news",
   },
   {
     id: "liked",

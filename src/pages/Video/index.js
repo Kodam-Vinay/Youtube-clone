@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AiOutlineDislike,
@@ -22,6 +28,7 @@ import {
 } from "../../Slices/LikedAndSavedVideosSlice";
 import SuggestionVideos from "../../components/SuggestionVideos";
 import useGetSingleChannelDetails from "../../utils/useGetSingleChannelDetails";
+import ErrorPage from "../ErrorPage";
 const constApiStatus = {
   initial: "INITIAL",
   inProgress: "IN_PROGRESS",
@@ -32,7 +39,6 @@ const constApiStatus = {
 const Video = () => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
-    errorMsg: "",
     data: {},
   });
 
@@ -51,36 +57,78 @@ const Video = () => {
     }));
   }, []);
   const videoDetails = useVideoDetails();
-
+  const channel = {
+    kind: "youtube#channel",
+    etag: "1yBPMruvQi-asIGqkKJqgsU9wpI",
+    id: "UCX8pnu3DYUnx8qy8V_c6oHg",
+    snippet: {
+      title: "Techno Gamerz",
+      description:
+        'Hey Everyone! This is Ujjwal here! Welcome to "Techno Gamerz" YouTube Channel!\nI created this channel for android games i upload daily videos about mobile related games and gaming news so if you’re interested in playing games so this channel is helpful for you.\nPlease SUBSCRIBE to Techno Gamerz, Thanks.\n\nIf you are looking for somebody to make a review of your products or product of your company, such as:\nphones, tablets, PC, gadgets or even apps, you can contact us so we can make a deal...\n\nFor Business enquiries: technogamerzofficial@gmail.com',
+      customUrl: "@technogamerzofficial",
+      publishedAt: "2017-08-13T16:15:04Z",
+      thumbnails: {
+        default: {
+          url: "https://yt3.ggpht.com/ytc/AOPolaSUpQS0tN2sRV2dI8He74PEO2dAXECmXvGrSh2TbQ=s88-c-k-c0x00ffffff-no-rj-mo",
+          width: 88,
+          height: 88,
+        },
+        medium: {
+          url: "https://yt3.ggpht.com/ytc/AOPolaSUpQS0tN2sRV2dI8He74PEO2dAXECmXvGrSh2TbQ=s240-c-k-c0x00ffffff-no-rj-mo",
+          width: 240,
+          height: 240,
+        },
+        high: {
+          url: "https://yt3.ggpht.com/ytc/AOPolaSUpQS0tN2sRV2dI8He74PEO2dAXECmXvGrSh2TbQ=s800-c-k-c0x00ffffff-no-rj-mo",
+          width: 800,
+          height: 800,
+        },
+      },
+      localized: {
+        title: "Techno Gamerz",
+        description:
+          'Hey Everyone! This is Ujjwal here! Welcome to "Techno Gamerz" YouTube Channel!\nI created this channel for android games i upload daily videos about mobile related games and gaming news so if you’re interested in playing games so this channel is helpful for you.\nPlease SUBSCRIBE to Techno Gamerz, Thanks.\n\nIf you are looking for somebody to make a review of your products or product of your company, such as:\nphones, tablets, PC, gadgets or even apps, you can contact us so we can make a deal...\n\nFor Business enquiries: technogamerzofficial@gmail.com',
+      },
+      country: "IN",
+    },
+    contentDetails: {
+      relatedPlaylists: {
+        likes: "",
+        uploads: "UUX8pnu3DYUnx8qy8V_c6oHg",
+      },
+    },
+    statistics: {
+      viewCount: "10104353281",
+      subscriberCount: "35500000",
+      hiddenSubscriberCount: false,
+      videoCount: 958,
+    },
+  };
   useEffect(() => {
     if (Object.keys(videoDetails).length !== 0) {
-      if (videoDetails) {
-        setApiStatus((prev) => ({
-          ...prev,
-          status: constApiStatus.success,
-          data: videoDetails,
-        }));
-      } else {
-        setApiStatus((prev) => ({
-          ...prev,
-          status: apiStaus.failure,
-          errorMsg: "Bad Request",
-        }));
-      }
+      setApiStatus((prev) => ({
+        ...prev,
+        status: constApiStatus.success,
+        data: videoDetails,
+      }));
+    } else if (videoDetails >= 400) {
+      setApiStatus((prev) => ({
+        ...prev,
+        status: constApiStatus.failure,
+      }));
     }
   }, [videoDetails]);
 
   const channelDetails = useGetSingleChannelDetails(
     apiStaus?.data?.snippet?.channelId
   );
-
   const dispatch = useDispatch();
   const onClickLike = () => {
     if (
       Object.keys(videoDetails).length !== 0 &&
       Object.keys(channelDetails).length !== 0
     ) {
-      const completeVideoDetails = { ...videoDetails, channelDetails };
+      const completeVideoDetails = { ...videoDetails, channel };
       dispatch(addToLikedVideos(completeVideoDetails));
     }
   };
@@ -89,7 +137,7 @@ const Video = () => {
       Object.keys(videoDetails).length !== 0 &&
       Object.keys(channelDetails).length !== 0
     ) {
-      const completeVideoDetails = { ...videoDetails, channelDetails };
+      const completeVideoDetails = { ...videoDetails, channel };
       dispatch(addToUnlikedVideos(completeVideoDetails));
     }
   };
@@ -98,30 +146,30 @@ const Video = () => {
       Object.keys(videoDetails).length !== 0 &&
       Object.keys(channelDetails).length !== 0
     ) {
-      const completeVideoDetails = { ...videoDetails, channelDetails };
+      const completeVideoDetails = { ...videoDetails, channel };
       dispatch(addToSavedVideos(completeVideoDetails));
     }
   };
-  const SuccessView = () => {
-    const checkThisVideoIsSaved = useMemo(
-      () => savedVideos.find((each) => each?.id === videoDetails?.id),
-      [savedVideos]
-    );
-    const checkThisVideoIsLiked = useMemo(
-      () => likedVideos.find((each) => each?.id === videoDetails?.id),
-      [likedVideos]
-    );
-    const checkThisVideoIsDisLiked = useMemo(
-      () => unlikedVideos.find((each) => each?.id === videoDetails?.id),
-      [unlikedVideos]
-    );
+  const checkThisVideoIsSaved = savedVideos.find(
+    (each) => each?.id === videoDetails?.id
+  );
 
+  const checkThisVideoIsLiked = likedVideos.find(
+    (each) => each?.id === videoDetails?.id
+  );
+
+  const checkThisVideoIsDisLiked = unlikedVideos.find(
+    (each) => each?.id === videoDetails?.id
+  );
+
+  const SuccessView = () => {
     const { id, snippet, statistics } = apiStaus.data;
+    document.title = snippet?.title;
     const likesCount = useNumericToAlpha(statistics?.likeCount);
     return (
       <div className="w-full h-[96%] overflow-y-auto pb-5 flex flex-col lg:flex-row p-1 lg:p-4 lg:mb-10">
         <div className="h-96 lg:w-4/6 xl:3/4 xs:h-[400px] mxs:h-[480px] sm:h-[560px] md:h-[640px] lg:h-full">
-          <div className="w-full h-44 xs:h-56 mxs:h-72 sm:h-96 md:h-[450px] lg:h-[500px]">
+          <div className="w-full h-44 xs:h-52 mxs:h-72 sm:h-96 md:h-[450px] lg:h-[500px]">
             <ReactPlayer
               url={YOUTUBE_VIDEO_PLAYER_URL + id}
               width="100%"
@@ -130,7 +178,7 @@ const Video = () => {
               className={`overflow-hidden rounded-md shadow-2xl ${
                 isDarkMode ? "border border-white" : ""
               }`}
-              playing
+              // playing
             />
           </div>
           <div
@@ -139,7 +187,7 @@ const Video = () => {
             }`}
           >
             <div className="px-2">
-              <h1 className="font-bold text-base mxs:text-lg sm:text-xl">
+              <h1 className="font-bold xs:text-base mxs:text-lg sm:text-xl mt-1">
                 {snippet?.title}
               </h1>
               <div className="channel-details mt-2 flex items-center">
@@ -150,10 +198,10 @@ const Video = () => {
                       : DUMMY_IMG_URL
                   }
                   alt="channel-logo"
-                  className="h-10 w-10 rounded-full mr-2"
+                  className="h-6 w-6 mxs:h-10 mxs:w-10 rounded-full mr-2"
                 />
                 <div className="channel-text">
-                  <h1 className="font-bold text-base">
+                  <h1 className="font-bold text-sm mxs:text-base">
                     {channelDetails?.snippet?.title}
                   </h1>
                   <p className="font-bold text-gray-400 text-sm">
@@ -218,7 +266,7 @@ const Video = () => {
             </div>
           </div>
         </div>
-        <div className="p-2 lg:w-1/3 xl:1/4">
+        <div className="p-2 lg:w-1/3 xl:1/4 mt-8 mxs:mt-4">
           <SuggestionVideos categoryId={snippet?.categoryId} />
         </div>
       </div>
@@ -231,6 +279,8 @@ const Video = () => {
         return <h1>Loading.....</h1>;
       case constApiStatus.success:
         return <SuccessView />;
+      case constApiStatus.failure:
+        return <ErrorPage />;
       default:
         return null;
     }

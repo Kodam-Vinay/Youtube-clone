@@ -4,6 +4,7 @@ import VideoCard from "../../components/VideoCard";
 import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
+import { getFullDetails } from "../../helper";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -54,16 +55,7 @@ const Gaming = () => {
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
-    const fullDetails = videos.map((each) => {
-      let channelId = channel.find(
-        (eachItem) => eachItem.id === each?.snippet?.channelId
-      );
-      if (channelId) {
-        each = { ...each, channelDetails: channelId };
-      }
-      return each;
-    });
-
+    const fullDetails = getFullDetails(videos, channel);
     return (
       <div
         className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}

@@ -5,6 +5,7 @@ import useDateToDistanceFormat from "../../utils/useDateToDistanceFormat";
 import { makeSearchClicked } from "../../Slices/SearchSuggestionSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { DUMMY_IMG_URL } from "../../config/constants";
+import useWindowSize from "../../utils/useWindowSize";
 
 const ShowSearchResults = ({ searchResults }) => {
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
@@ -16,14 +17,12 @@ const ShowSearchResults = ({ searchResults }) => {
   const onClickVideo = () => {
     dispatch(makeSearchClicked(false));
   };
+  const size = useWindowSize();
   const count = useNumericToAlpha(statistics?.viewCount);
   const location = useLocation();
   const SuccessView = () => {
     return (
-      <Link
-        to={`/watch?v=${location.pathname === "/search" ? id?.videoId : id}`}
-        onClick={onClickVideo}
-      >
+      <Link to={`/watch?v=${id}`} onClick={onClickVideo}>
         <div className="flex">
           <img
             src={snippet?.thumbnails?.medium?.url}
@@ -35,8 +34,10 @@ const ShowSearchResults = ({ searchResults }) => {
             } rounded-lg w-24 h-20 xs:w-32 mr-2`}
           />
           <div className={`${isDarkMode ? "text-white" : "text-black"}`}>
-            <p className="font-bold text-sm mb-1">
-              {snippet?.title.length > 35
+            <p className={`mxs:font-bold text-sm mb-1`}>
+              {size.width < 300
+                ? snippet?.title.slice(0, 15) + "..."
+                : size.width >= 300 && size.width < 650
                 ? snippet?.title.slice(0, 35) + "..."
                 : snippet?.title}
             </p>

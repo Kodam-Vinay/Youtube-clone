@@ -16,6 +16,7 @@ const LikedAndSavedVideosSlice = createSlice({
         const isAlreadyExists = state.unlikedVideos.find(
           (each) => each?.id === action.payload?.id
         );
+
         if (isAlreadyExists) {
           const index = state.unlikedVideos.indexOf(isAlreadyExists);
           state.unlikedVideos.splice(index, 1);

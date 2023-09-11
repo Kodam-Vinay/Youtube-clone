@@ -4,6 +4,7 @@ import VideoCard from "../../components/VideoCard";
 import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
+import { getFullDetails } from "../../helper";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -12,7 +13,7 @@ const constApiStatus = {
   failure: "FAILURE",
 };
 
-const Movies = () => {
+const News = () => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
     data: {},
@@ -20,7 +21,7 @@ const Movies = () => {
 
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
 
-  document.title = "Movies";
+  document.title = "News";
   useEffect(() => {
     setApiStatus((prev) => ({
       ...prev,
@@ -29,7 +30,7 @@ const Movies = () => {
   }, []);
   const videosList = useGetVideosList(
     POPULAR_VIDEOS_API +
-      "&videoCategoryId=24".replace("maxResults=50", "maxResults=30")
+      "&videoCategoryId=25".replace("maxResults=50", "maxResults=30")
   );
   useEffect(() => {
     if (videosList?.videos?.length > 0) {
@@ -54,15 +55,7 @@ const Movies = () => {
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
-    const fullDetails = videos.map((each) => {
-      let channelId = channel.find(
-        (eachItem) => eachItem.id === each?.snippet?.channelId
-      );
-      if (channelId) {
-        each = { ...each, channelDetails: channelId };
-      }
-      return each;
-    });
+    const fullDetails = getFullDetails(videos, channel);
     return (
       <div
         className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
@@ -97,4 +90,4 @@ const Movies = () => {
   );
 };
 
-export default Movies;
+export default News;

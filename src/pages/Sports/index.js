@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { POPULAR_VIDEOS_API } from "../../config/constants";
+import VideoCard from "../../components/VideoCard";
+import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
-import ErrorPage from "../../pages/ErrorPage";
-import ShowSearchResults from "../ShowSearchResults";
-import { RingLoader } from "react-spinners";
+import ErrorPage from "../ErrorPage";
+import { getFullDetails } from "../../helper";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -12,12 +13,15 @@ const constApiStatus = {
   failure: "FAILURE",
 };
 
-const SuggestionVideos = ({ categoryId }) => {
+const Sports = () => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
     data: {},
   });
 
+  const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
+
+  document.title = "Sports";
   useEffect(() => {
     setApiStatus((prev) => ({
       ...prev,
@@ -25,10 +29,8 @@ const SuggestionVideos = ({ categoryId }) => {
     }));
   }, []);
   const videosList = useGetVideosList(
-    (POPULAR_VIDEOS_API + "&videoCategoryId=" + categoryId).replace(
-      "maxResults=50",
-      "maxResults=20"
-    )
+    POPULAR_VIDEOS_API +
+      "&videoCategoryId=17".replace("maxResults=50", "maxResults=30")
   );
   useEffect(() => {
     if (videosList?.videos?.length > 0) {
@@ -53,20 +55,14 @@ const SuggestionVideos = ({ categoryId }) => {
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
-    const fullDetails = videos.map((each) => {
-      let channelId = channel.find(
-        (eachItem) => eachItem.id === each?.snippet?.channelId
-      );
-      if (channelId) {
-        each = { ...each, channelDetails: channelId };
-      }
-      return each;
-    });
+    const fullDetails = getFullDetails(videos, channel);
     return (
-      <div className="flex flex-col h-[96%] space-y-2 w-full">
+      <div
+        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
+      >
         {fullDetails.length > 0 &&
           fullDetails?.map((each) => (
-            <ShowSearchResults key={each?.id} searchResults={each} />
+            <VideoCard key={each?.id} videosList={each} />
           ))}
       </div>
     );
@@ -78,11 +74,7 @@ const SuggestionVideos = ({ categoryId }) => {
   const RenderResults = () => {
     switch (apiStaus.status) {
       case constApiStatus.inProgress:
-        return (
-          <div className="w-full h-full flex items-center justify-center m-auto">
-            <RingLoader />
-          </div>
-        );
+        return <h1>Loading.....</h1>;
       case constApiStatus.success:
         return <SuccessView />;
       case constApiStatus.failure:
@@ -92,10 +84,10 @@ const SuggestionVideos = ({ categoryId }) => {
     }
   };
   return (
-    <div className="w-full h-full">
+    <div className={`${isMenuOpen ? "w-full mxs:w-[90%] " : "w-full"} h-full`}>
       <RenderResults />
     </div>
   );
 };
 
-export default SuggestionVideos;
+export default Sports;
