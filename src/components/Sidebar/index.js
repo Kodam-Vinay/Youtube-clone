@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { AiFillDislike, AiFillLike, AiOutlineHome } from "react-icons/ai";
-import { GoVideo } from "react-icons/go";
-import { BsMusicNote } from "react-icons/bs";
+import { BsMusicNote, BsController } from "react-icons/bs";
 import { CiStreamOn } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import NavigationLink from "../NavigationLink";
 import { v4 as uuidV4 } from "uuid";
-import { GrGamepad } from "react-icons/gr";
 import { MdSportsCricket } from "react-icons/md";
 import "./index.css";
 import { BiListPlus } from "react-icons/bi";
@@ -29,7 +27,7 @@ const sideBarFirstList = [
   {
     id: "gaming",
     value: "Gaming",
-    logo: <GrGamepad />,
+    logo: <BsController />,
     url: "/gaming",
   },
   {
@@ -83,7 +81,7 @@ const sideBarSecondList = [
   },
   {
     id: "gaming",
-    logo: <GrGamepad />,
+    logo: <BsController />,
     url: "/gaming",
   },
   {

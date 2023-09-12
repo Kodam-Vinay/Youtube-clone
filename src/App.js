@@ -8,7 +8,6 @@ import Video from "./pages/Video";
 import Body from "./components/Body";
 import SearchResults from "./pages/SearchResults";
 import Music from "./pages/Music";
-import ErrorPage from "./pages/ErrorPage";
 import Gaming from "./pages/Gaming";
 import LikedVideos from "./pages/LikedVideos";
 import DisLikedVideos from "./pages/DisLikedVideos";
@@ -59,6 +58,11 @@ const catergoriesList = [
   },
   {
     id: 7,
+    value: "17",
+    name: "Sports",
+  },
+  {
+    id: 8,
     value: "24",
     name: "Entertainment",
   },

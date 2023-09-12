@@ -12,9 +12,13 @@ const NavigationLink = ({ linksList, isActive1, isActive2 }) => {
     <div
       className={`add-sidebar-animation flex items-center space-x-2 h-7  cursor-pointer rounded-md px-2  ${
         isDarkMode
-          ? "text-white hover:bg-slate-800"
-          : "text-black hover:bg-gray-100"
-      } ${isActive1 && isActive2 ? "bg-red-100" : ""}`}
+          ? isActive1 && isActive2
+            ? "bg-slate-950 border border-slate-800 text-white"
+            : "text-white"
+          : isActive1 && isActive2
+          ? "bg-gray-300 text-black"
+          : "text-black"
+      }`}
       onClick={onClickLink}
     >
       <div>{logo}</div>

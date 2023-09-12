@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AiOutlineDislike,
@@ -131,7 +125,7 @@ const Video = () => {
               className={`overflow-hidden rounded-md shadow-2xl ${
                 isDarkMode ? "border border-white" : ""
               }`}
-              // playing
+              playing
             />
           </div>
           <div
