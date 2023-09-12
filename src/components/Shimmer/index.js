@@ -14,7 +14,7 @@ const Shimmer = () => {
               isMenuOpen ? "mxs:w-60" : "mxs:w-64"
             }`}
           >
-            <div className="rounded-lg w-full shadow-lg h-48 mxs:h-40 bg-gray-200"></div>
+            <div className="rounded-lg w-full shadow-lg h-44 mxs:h-36 bg-gray-200"></div>
             <div className="mt-3 flex">
               <div className="h-8 w-8 rounded-full mr-2 bg-gray-200"></div>
 
