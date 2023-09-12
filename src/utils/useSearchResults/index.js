@@ -12,7 +12,7 @@ const useSearchResults = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSearchClicked, searchInput]);
   const [searchResults, setSearchResults] = useState([]);
-  const [error, setError] = useState(0);
+  const [error, setError] = useState({});
   const getData = async () => {
     if (searchInput === "") {
       return null;
@@ -25,7 +25,7 @@ const useSearchResults = () => {
         const videoIds = data?.items?.map((each) => each?.id?.videoId);
         setSearchResults(videoIds);
       } else {
-        setError(response.status);
+        setError({ error: response.status });
       }
     } catch (error) {
       console.log(error);

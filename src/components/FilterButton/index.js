@@ -6,7 +6,7 @@ const FilterButton = ({ buttonList, setActiveFilterButton, isActive }) => {
   return (
     <button
       type="button"
-      className={`text-sm mxs:text-base min-w-fit px-4 h-10 sm:py-1  rounded-md ${
+      className={`text-sm mxs:text-base min-w-fit px-4 h-10 sm:py-1 rounded-md ${
         isActive ? "bg-gray-300" : "bg-gray-100"
       }`}
       onClick={onClickFilter}

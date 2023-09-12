@@ -6,6 +6,8 @@ import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails } from "../../helper";
 import { v4 as uuidV4 } from "uuid";
+import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
+import Shimmer from "../../components/Shimmer";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -39,7 +41,7 @@ const Live = () => {
         status: constApiStatus.success,
         data: videosList,
       }));
-    } else if (videosList >= 400) {
+    } else if (videosList?.error) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
@@ -50,12 +52,20 @@ const Live = () => {
         status: constApiStatus.inProgress,
       }));
     }
-  }, [videosList?.videos]);
+  }, [videosList?.videos, videosList?.error]);
 
   const SuccessView = () => {
-    const videos = apiStaus?.data?.videos;
-    const channel = apiStaus?.data?.channelDetails;
-    const fullDetails = getFullDetails(videos, channel);
+    let fullDetails = [];
+    const result = apiStaus?.data?.videos?.map((each) => each?.id?.videoId);
+    const getVideosList = useVideoDetailsWithOneAPi(result);
+    const { videos, channelDetails } = getVideosList;
+    if (videos !== undefined && channelDetails !== undefined) {
+      fullDetails = getFullDetails(videos, channelDetails);
+    }
+    console.log(fullDetails);
+    if (getVideosList === "IN_PROGRESS") {
+      return null;
+    }
     return (
       <div
         className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
@@ -74,7 +84,7 @@ const Live = () => {
   const RenderResults = () => {
     switch (apiStaus.status) {
       case constApiStatus.inProgress:
-        return <h1>Loading.....</h1>;
+        return <Shimmer />;
       case constApiStatus.success:
         return <SuccessView />;
       case constApiStatus.failure:

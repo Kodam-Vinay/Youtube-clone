@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails } from "../../helper";
+import Shimmer from "../../components/Shimmer";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -39,7 +40,7 @@ const News = () => {
         status: constApiStatus.success,
         data: videosList,
       }));
-    } else if (videosList >= 400) {
+    } else if (videosList?.error) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
@@ -50,7 +51,7 @@ const News = () => {
         status: constApiStatus.inProgress,
       }));
     }
-  }, [videosList?.videos]);
+  }, [videosList?.videos, videosList?.error]);
 
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
@@ -74,7 +75,7 @@ const News = () => {
   const RenderResults = () => {
     switch (apiStaus.status) {
       case constApiStatus.inProgress:
-        return <h1>Loading.....</h1>;
+        return <Shimmer />;
       case constApiStatus.success:
         return <SuccessView />;
       case constApiStatus.failure:

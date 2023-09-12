@@ -57,67 +57,20 @@ const Video = () => {
     }));
   }, []);
   const videoDetails = useVideoDetails();
-  const channel = {
-    kind: "youtube#channel",
-    etag: "1yBPMruvQi-asIGqkKJqgsU9wpI",
-    id: "UCX8pnu3DYUnx8qy8V_c6oHg",
-    snippet: {
-      title: "Techno Gamerz",
-      description:
-        'Hey Everyone! This is Ujjwal here! Welcome to "Techno Gamerz" YouTube Channel!\nI created this channel for android games i upload daily videos about mobile related games and gaming news so if you’re interested in playing games so this channel is helpful for you.\nPlease SUBSCRIBE to Techno Gamerz, Thanks.\n\nIf you are looking for somebody to make a review of your products or product of your company, such as:\nphones, tablets, PC, gadgets or even apps, you can contact us so we can make a deal...\n\nFor Business enquiries: technogamerzofficial@gmail.com',
-      customUrl: "@technogamerzofficial",
-      publishedAt: "2017-08-13T16:15:04Z",
-      thumbnails: {
-        default: {
-          url: "https://yt3.ggpht.com/ytc/AOPolaSUpQS0tN2sRV2dI8He74PEO2dAXECmXvGrSh2TbQ=s88-c-k-c0x00ffffff-no-rj-mo",
-          width: 88,
-          height: 88,
-        },
-        medium: {
-          url: "https://yt3.ggpht.com/ytc/AOPolaSUpQS0tN2sRV2dI8He74PEO2dAXECmXvGrSh2TbQ=s240-c-k-c0x00ffffff-no-rj-mo",
-          width: 240,
-          height: 240,
-        },
-        high: {
-          url: "https://yt3.ggpht.com/ytc/AOPolaSUpQS0tN2sRV2dI8He74PEO2dAXECmXvGrSh2TbQ=s800-c-k-c0x00ffffff-no-rj-mo",
-          width: 800,
-          height: 800,
-        },
-      },
-      localized: {
-        title: "Techno Gamerz",
-        description:
-          'Hey Everyone! This is Ujjwal here! Welcome to "Techno Gamerz" YouTube Channel!\nI created this channel for android games i upload daily videos about mobile related games and gaming news so if you’re interested in playing games so this channel is helpful for you.\nPlease SUBSCRIBE to Techno Gamerz, Thanks.\n\nIf you are looking for somebody to make a review of your products or product of your company, such as:\nphones, tablets, PC, gadgets or even apps, you can contact us so we can make a deal...\n\nFor Business enquiries: technogamerzofficial@gmail.com',
-      },
-      country: "IN",
-    },
-    contentDetails: {
-      relatedPlaylists: {
-        likes: "",
-        uploads: "UUX8pnu3DYUnx8qy8V_c6oHg",
-      },
-    },
-    statistics: {
-      viewCount: "10104353281",
-      subscriberCount: "35500000",
-      hiddenSubscriberCount: false,
-      videoCount: 958,
-    },
-  };
   useEffect(() => {
-    if (Object.keys(videoDetails).length !== 0) {
+    if (Object.keys(videoDetails).length > 0) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.success,
         data: videoDetails,
       }));
-    } else if (videoDetails >= 400) {
+    } else if (videoDetails?.error) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
       }));
     }
-  }, [videoDetails]);
+  }, [videoDetails, videoDetails.error]);
 
   const channelDetails = useGetSingleChannelDetails(
     apiStaus?.data?.snippet?.channelId
@@ -128,7 +81,7 @@ const Video = () => {
       Object.keys(videoDetails).length !== 0 &&
       Object.keys(channelDetails).length !== 0
     ) {
-      const completeVideoDetails = { ...videoDetails, channel };
+      const completeVideoDetails = { ...videoDetails, channelDetails };
       dispatch(addToLikedVideos(completeVideoDetails));
     }
   };
@@ -137,7 +90,7 @@ const Video = () => {
       Object.keys(videoDetails).length !== 0 &&
       Object.keys(channelDetails).length !== 0
     ) {
-      const completeVideoDetails = { ...videoDetails, channel };
+      const completeVideoDetails = { ...videoDetails, channelDetails };
       dispatch(addToUnlikedVideos(completeVideoDetails));
     }
   };
@@ -146,7 +99,7 @@ const Video = () => {
       Object.keys(videoDetails).length !== 0 &&
       Object.keys(channelDetails).length !== 0
     ) {
-      const completeVideoDetails = { ...videoDetails, channel };
+      const completeVideoDetails = { ...videoDetails, channelDetails };
       dispatch(addToSavedVideos(completeVideoDetails));
     }
   };

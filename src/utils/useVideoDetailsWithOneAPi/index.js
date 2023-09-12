@@ -12,7 +12,7 @@ const useVideoDetailsWithOneAPi = (videosList) => {
     channelIds: [],
   });
 
-  const [error, setError] = useState(0);
+  const [error, setError] = useState({});
   const channelDetails = useChannelDetails(videosInfo.channelIds);
 
   const getData = async () => {
@@ -37,8 +37,7 @@ const useVideoDetailsWithOneAPi = (videosList) => {
             channelIds: channelDetails,
           });
         } else {
-          setError(response.status);
-          return response.status;
+          setError({ error: response.status });
         }
       } catch (error) {
         console.log(error);

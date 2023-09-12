@@ -4,6 +4,7 @@ import { v4 as uuidV4 } from "uuid";
 import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
 import { useEffect, useState } from "react";
 import ErrorPage from "../ErrorPage";
+import SearchResultsShimmer from "../../components/SearchResultsShimmer";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -32,7 +33,7 @@ const SearchResults = () => {
         status: constApiStatus.success,
         data: results,
       }));
-    } else if (results >= 400) {
+    } else if (results?.error) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
@@ -43,7 +44,7 @@ const SearchResults = () => {
         status: constApiStatus.inProgress,
       }));
     }
-  }, [results]);
+  }, [results, results?.error]);
   const FirstSuccessView = () => {
     const videosList = useVideoDetailsWithOneAPi(apiStaus.data);
     const videos = videosList?.videos;
@@ -88,7 +89,7 @@ const SearchResults = () => {
   const RenderResults = () => {
     switch (apiStaus.status) {
       case constApiStatus.inProgress:
-        return <h1>Loading.....</h1>;
+        return <SearchResultsShimmer />;
       case constApiStatus.success:
         return <FirstSuccessView />;
       case constApiStatus.failure:

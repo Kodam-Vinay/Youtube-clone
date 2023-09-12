@@ -19,6 +19,7 @@ import Sports from "./pages/Sports";
 import News from "./pages/News";
 import FilterContext from "./utils/FilterContext";
 import { useState } from "react";
+import SomethingWentWrong from "./pages/SomethingWentWrong";
 
 const onClickContextMenu = (event) => {
   event.preventDefault();
@@ -93,52 +94,62 @@ function App() {
     {
       path: "/",
       element: <RenderLayout />,
-      errorElement: <ErrorPage />,
       children: [
         {
           path: "",
           element: <Home />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/music",
           element: <Music />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/watch",
           element: <Video />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/gaming",
           element: <Gaming />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/live",
           element: <Live />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/sports",
           element: <Sports />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/news",
           element: <News />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/liked",
           element: <LikedVideos />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/disliked",
           element: <DisLikedVideos />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/saved",
           element: <SavedVideos />,
+          errorElement: <SomethingWentWrong />,
         },
 
         {
           path: "/search",
           element: <SearchResults />,
+          errorElement: <SomethingWentWrong />,
         },
         {
           path: "/*",

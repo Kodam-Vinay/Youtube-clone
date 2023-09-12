@@ -8,6 +8,8 @@ import Filters from "../../components/Filters";
 import FilterContext from "../../utils/FilterContext";
 import { filterData, getFullDetails } from "../../helper";
 import NoVideos from "../../components/NoVideos";
+import Shimmer from "../../components/Shimmer";
+import FilterShimmer from "../../components/FilterShimmer";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -38,7 +40,7 @@ const Home = () => {
         status: constApiStatus.success,
         data: videosList,
       }));
-    } else if (videosList >= 400) {
+    } else if (videosList?.error) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
@@ -49,8 +51,7 @@ const Home = () => {
         status: constApiStatus.inProgress,
       }));
     }
-  }, [videosList?.videos]);
-
+  }, [videosList?.videos, videosList?.error]);
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
@@ -82,7 +83,12 @@ const Home = () => {
   const RenderResults = () => {
     switch (apiStaus.status) {
       case constApiStatus.inProgress:
-        return <h1>Loading.....</h1>;
+        return (
+          <div className="h-full w-full">
+            <FilterShimmer />
+            <Shimmer />
+          </div>
+        );
       case constApiStatus.success:
         return <SuccessView />;
       case constApiStatus.failure:
@@ -93,7 +99,7 @@ const Home = () => {
   };
   return (
     <div className={`${isMenuOpen ? "w-full mxs:w-[90%] " : "w-full"} h-full`}>
-      <RenderResults />
+      {RenderResults()}
     </div>
   );
 };

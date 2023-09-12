@@ -13,7 +13,7 @@ const useVideoDetails = (id) => {
     (store) => store.suggestions.isSearchClicked
   );
   const [videoInfo, setVideoInfo] = useState({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const getData = async () => {
     try {
       const videoId = isSearchClicked ? id : searchId.get("v");
@@ -27,7 +27,7 @@ const useVideoDetails = (id) => {
           const data = await response.json();
           setVideoInfo(data?.items[0]);
         } else {
-          setError(response.status);
+          setError({ error: response.status });
         }
       }
     } catch (error) {

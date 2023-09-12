@@ -4,6 +4,8 @@ import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../../pages/ErrorPage";
 import ShowSearchResults from "../ShowSearchResults";
 import { RingLoader } from "react-spinners";
+import { getFullDetails } from "../../helper";
+import { videos, channelDetails } from "../../config/constants";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -37,7 +39,13 @@ const SuggestionVideos = ({ categoryId }) => {
         status: constApiStatus.success,
         data: videosList,
       }));
-    } else if (videosList >= 400) {
+    } else if (videosList.error === 404) {
+      setApiStatus((prev) => ({
+        ...prev,
+        status: constApiStatus.success,
+        data: { videos, channelDetails },
+      }));
+    } else if (videosList.error) {
       setApiStatus((prev) => ({
         ...prev,
         status: constApiStatus.failure,
@@ -48,20 +56,11 @@ const SuggestionVideos = ({ categoryId }) => {
         status: constApiStatus.inProgress,
       }));
     }
-  }, [videosList?.videos]);
-
+  }, [videosList?.videos, videosList.error]);
   const SuccessView = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
-    const fullDetails = videos.map((each) => {
-      let channelId = channel.find(
-        (eachItem) => eachItem.id === each?.snippet?.channelId
-      );
-      if (channelId) {
-        each = { ...each, channelDetails: channelId };
-      }
-      return each;
-    });
+    const fullDetails = getFullDetails(videos, channel);
     return (
       <div className="flex flex-col h-[96%] space-y-2 w-full">
         {fullDetails.length > 0 &&

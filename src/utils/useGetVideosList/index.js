@@ -9,7 +9,7 @@ const useGetVideosList = (apiUrl) => {
     videos: [],
     channelIds: [],
   });
-  const [error, setError] = useState();
+  const [error, setError] = useState({});
   const channelDetails = useChannelDetails(videosList.channelIds);
   const getData = async () => {
     try {
@@ -24,7 +24,7 @@ const useGetVideosList = (apiUrl) => {
           channelIds: channelDetails,
         });
       } else {
-        setError(response.status);
+        setError({ error: response.status });
       }
     } catch (error) {
       console.log(error);
