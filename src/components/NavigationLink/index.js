@@ -10,14 +10,18 @@ const NavigationLink = ({ linksList, isActive1, isActive2 }) => {
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   return (
     <div
-      className={`add-sidebar-animation flex items-center space-x-2 h-7  cursor-pointer rounded-md px-2  ${
+      className={`add-sidebar-animation flex items-center space-x-2 h-7 cursor-pointer rounded-md px-2 ${
+        isDarkMode
+          ? "text-white hover:bg-slate-800"
+          : "text-black hover:bg-gray-400"
+      }  ${
         isDarkMode
           ? isActive1 && isActive2
-            ? "bg-slate-950 border border-slate-800 text-white"
-            : "text-white"
+            ? "bg-slate-950 border border-slate-800"
+            : ""
           : isActive1 && isActive2
-          ? "bg-gray-300 text-black"
-          : "text-black"
+          ? "bg-gray-300"
+          : ""
       }`}
       onClick={onClickLink}
     >

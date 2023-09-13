@@ -58,7 +58,7 @@ const Music = () => {
     const fullDetails = getFullDetails(videos, channel);
     return (
       <div
-        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
+        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap overflow-y-auto h-[96%]`}
       >
         {fullDetails.length > 0 &&
           fullDetails?.map((each) => (
@@ -84,7 +84,7 @@ const Music = () => {
     }
   };
   return (
-    <div className={`${isMenuOpen ? "w-full mxs:w-[90%] " : "w-full"} h-full`}>
+    <div className="w-full h-full">
       <RenderResults />
     </div>
   );

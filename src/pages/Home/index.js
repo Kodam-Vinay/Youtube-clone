@@ -61,7 +61,7 @@ const Home = () => {
       <div className="w-full h-full">
         <Filters />
         <div
-          className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%]`}
+          className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap overflow-y-auto h-[96%]`}
         >
           {activeFilterButton === "0" && fullDetails.length > 0 ? (
             fullDetails?.map((each) => (
@@ -97,11 +97,7 @@ const Home = () => {
         return null;
     }
   };
-  return (
-    <div className={`${isMenuOpen ? "w-full mxs:w-[90%] " : "w-full"} h-full`}>
-      {RenderResults()}
-    </div>
-  );
+  return <div className="w-full h-full pb-20 mxs:pb-15">{RenderResults()}</div>;
 };
 
 export default Home;

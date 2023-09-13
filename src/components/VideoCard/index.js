@@ -8,7 +8,6 @@ import { DUMMY_IMG_URL } from "../../config/constants";
 const VideoCard = ({ videosList }) => {
   const { snippet, statistics, channelDetails } = videosList;
   const noOfViews = useNumericToAlpha(statistics?.viewCount);
-  const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   const date = useDateToDistanceFormat(snippet.publishedAt);
   const onClickVideo = () => {
@@ -16,11 +15,7 @@ const VideoCard = ({ videosList }) => {
   };
   return (
     <Link to={`/watch?v=${videosList?.id}`} onClick={onClickVideo}>
-      <div
-        className={`m-2 w-full mb-4 sm:mb-2 ${
-          isMenuOpen ? "mxs:w-60" : "mxs:w-64"
-        }`}
-      >
+      <div className={`m-2 w-full mb-2 mxs:w-64`}>
         <img
           src={snippet?.thumbnails?.medium?.url}
           alt="youtbeVideoLogo"
