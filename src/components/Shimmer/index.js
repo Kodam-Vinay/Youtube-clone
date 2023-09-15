@@ -4,7 +4,9 @@ import { v4 as uuidV4 } from "uuid";
 const Shimmer = () => {
   const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
   return (
-    <div className="p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap mxs:justify-center overflow-y-auto h-[96%] mb-10">
+    <div
+      className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap overflow-y-auto h-[96%]`}
+    >
       {Array(20)
         .fill("")
         .map(() => (

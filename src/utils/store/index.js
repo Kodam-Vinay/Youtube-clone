@@ -4,6 +4,8 @@ import SearchSuggestionSlice from "../../Slices/SearchSuggestionSlice";
 import ChannelDetailsSlice from "../../Slices/ChannelDetailsSlice";
 import ThemeModeSlice from "../../Slices/ThemeModeSlice";
 import LikedAndSavedVideosSlice from "../../Slices/LikedAndSavedVideosSlice";
+import CommentSlice from "../../Slices/CommentSlice";
+import LiveChatSlice from "../../Slices/LiveChatSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     channelDetails: ChannelDetailsSlice,
     theme: ThemeModeSlice,
     storeVideo: LikedAndSavedVideosSlice,
+    comment: CommentSlice,
+    liveChat: LiveChatSlice,
   },
 });
 

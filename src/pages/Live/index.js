@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SEARCH_RESULTS_API } from "../../config/constants";
 import VideoCard from "../../components/VideoCard";
-import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails } from "../../helper";
@@ -22,8 +21,6 @@ const Live = () => {
     data: {},
   });
 
-  const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
-
   document.title = "Live";
   useEffect(() => {
     setApiStatus((prev) => ({
@@ -32,7 +29,10 @@ const Live = () => {
     }));
   }, []);
   const videosList = useGetVideosList(
-    SEARCH_RESULTS_API.replace("q=vinay&maxResults=20", "q=live&maxResults=30")
+    SEARCH_RESULTS_API.replace(
+      "q=vinay&maxResults=20",
+      "q=live&maxResults=50&regionCode=IN"
+    )
   );
   useEffect(() => {
     if (videosList?.videos?.length > 0) {
@@ -65,12 +65,16 @@ const Live = () => {
     if (getVideosList === "IN_PROGRESS") {
       return null;
     }
+    const onlyLiveVideos = fullDetails.filter(
+      (each) => each?.snippet?.liveBroadcastContent === "live"
+    );
+
     return (
       <div
         className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap overflow-y-auto h-[96%]`}
       >
-        {fullDetails.length > 0 &&
-          fullDetails?.map((each) => (
+        {onlyLiveVideos.length > 0 &&
+          onlyLiveVideos?.map((each) => (
             <VideoCard key={uuidV4()} videosList={each} />
           ))}
       </div>

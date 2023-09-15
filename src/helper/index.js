@@ -13,3 +13,8 @@ export const getFullDetails = (videos, channel) =>
     }
     return each;
   });
+
+export const randomNameGenerator = (namesList) => {
+  const randomNum = Math.ceil(Math.random() * namesList.length);
+  return namesList[randomNum];
+};

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { POPULAR_VIDEOS_API } from "../../config/constants";
 import VideoCard from "../../components/VideoCard";
-import { useSelector } from "react-redux";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails } from "../../helper";
@@ -18,8 +17,6 @@ const Music = () => {
     status: constApiStatus.initial,
     data: {},
   });
-
-  const isMenuOpen = useSelector((store) => store.hamburger.isMenuOpen);
 
   document.title = "Music";
   useEffect(() => {

@@ -10,12 +10,12 @@ const useNumericToAlpha = (number) => {
     if (number !== undefined) {
       if (number.length === 6) {
         setNumberToAlpha(numeral(number).format("0 a").toUpperCase());
-        return numberToAlpha;
+        return numberToAlpha.replace(".0", "");
       }
       setNumberToAlpha(numeral(number).format("0.0 a").toUpperCase());
     }
   };
 
-  return numberToAlpha;
+  return numberToAlpha.replace(".0", "");
 };
 export default useNumericToAlpha;

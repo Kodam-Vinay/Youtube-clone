@@ -5,7 +5,7 @@ import ErrorPage from "../../pages/ErrorPage";
 import ShowSearchResults from "../ShowSearchResults";
 import { RingLoader } from "react-spinners";
 import { getFullDetails } from "../../helper";
-import { videos, channelDetails } from "../../config/constants";
+import { channelDetails, videos } from "../../utils/mock";
 
 const constApiStatus = {
   initial: "INITIAL",

@@ -35,12 +35,21 @@ const ShowSearchResults = ({ searchResults }) => {
           />
           <div className={`${isDarkMode ? "text-white" : "text-black"}`}>
             <p className={`mxs:font-bold text-sm mb-1`}>
-              {size.width < 300
+              {location.pathname === "/watch"
+                ? size.width < 400
+                  ? snippet?.title.slice(0, 15) + "..."
+                  : size.width >= 400 && size.width < 550
+                  ? snippet?.title.slice(0, 35) + "..."
+                  : size.width >= 550 && size.width < 1024
+                  ? snippet?.title
+                  : snippet?.title.slice(0, 15) + "..."
+                : size.width < 400
                 ? snippet?.title.slice(0, 15) + "..."
-                : size.width >= 300 && size.width < 650
+                : size.width >= 400 && size.width < 550
                 ? snippet?.title.slice(0, 35) + "..."
                 : snippet?.title}
             </p>
+
             <div className="flex items-center space-x-1">
               <p className="text-sm">{count}</p>
               <BsDot />
@@ -54,7 +63,11 @@ const ShowSearchResults = ({ searchResults }) => {
                     : DUMMY_IMG_URL
                 }
                 alt="channel-logo"
-                className="h-8 w-8 rounded-full mr-2"
+                className={`${
+                  location.pathname === "/watch" && size.width > 1023
+                    ? "h-6 w-6 rounded-full mr-2"
+                    : "h-8 w-8 rounded-full mr-2"
+                } `}
               />
               <p className="text-sm">{snippet?.channelTitle}</p>
             </div>
