@@ -89,7 +89,9 @@ const Video = () => {
               channelDetails={channelDetails}
             />
           </div>
-          {snippet?.liveBroadcastContent !== "live" && <CommentSection />}
+          {snippet?.liveBroadcastContent !== "live" && (
+            <CommentSection videoId={id} />
+          )}
         </div>
         <div className="p-2 lg:w-1/3 xl:1/4 mt-8 mxs:mt-4 lg:mt-0 lg:pt-0 space-y-4">
           {snippet?.liveBroadcastContent === "live" && <LiveChat />}

@@ -7,10 +7,13 @@ import { useState } from "react";
 import { randomNameGenerator } from "../../helper";
 import { randomNames } from "../../utils/mock";
 
-const CommentSection = () => {
+const CommentSection = ({ videoId }) => {
   const dispatch = useDispatch();
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   const commentsDetails = useSelector((store) => store.comment.comments);
+  const filterComments = commentsDetails.filter(
+    (each) => each.videoId === videoId
+  );
   const [comment, setComment] = useState("");
   return (
     <div
@@ -25,6 +28,7 @@ const CommentSection = () => {
           e.preventDefault();
           dispatch(
             addComment({
+              videoId,
               id: uuidV4(),
               name: randomNameGenerator(randomNames),
               message: comment,
@@ -55,8 +59,8 @@ const CommentSection = () => {
       </form>
       <h1 className="font-bold text-xl ">Comments</h1>
       <div className="space-y-2">
-        {commentsDetails.length > 0 ? (
-          commentsDetails.map((each) => (
+        {filterComments.length > 0 ? (
+          filterComments.map((each) => (
             <ShowComment commentList={each} key={each?.id} />
           ))
         ) : (
