@@ -81,7 +81,7 @@ const Video = () => {
                 className={`overflow-hidden rounded-md shadow-2xl ${
                   isDarkMode ? "border border-white" : ""
                 }`}
-                // playing
+                playing
               />
             </div>
             <LikesAndSaveButtons
