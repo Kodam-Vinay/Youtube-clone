@@ -1,14 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { POPULAR_VIDEOS_API } from "../../config/constants";
-import VideoCard from "../../components/VideoCard";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
-import Filters from "../../components/Filters";
-import FilterContext from "../../utils/FilterContext";
-import { filterData, getFullDetails } from "../../helper";
-import NoVideos from "../../components/NoVideos";
+import { getFullDetails } from "../../helper";
 import Shimmer from "../../components/Shimmer";
 import FilterShimmer from "../../components/FilterShimmer";
+import HomeComponent from "../../components/HomeComponent";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -23,7 +20,6 @@ const Home = () => {
     data: {},
   });
 
-  const { activeFilterButton } = useContext(FilterContext);
   document.title = "Youtube Vinay";
   useEffect(() => {
     setApiStatus((prev) => ({
@@ -55,25 +51,8 @@ const Home = () => {
     const videos = apiStaus?.data?.videos;
     const channel = apiStaus?.data?.channelDetails;
     const fullDetails = getFullDetails(videos, channel);
-    const List = filterData(fullDetails, activeFilterButton);
-    return (
-      <div className="w-full h-full">
-        <Filters />
-        <div
-          className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap overflow-y-auto h-[96%]`}
-        >
-          {activeFilterButton === "0" && fullDetails.length > 0 ? (
-            fullDetails?.map((each) => (
-              <VideoCard key={each?.id} videosList={each} />
-            ))
-          ) : List.length > 0 ? (
-            List?.map((each) => <VideoCard key={each?.id} videosList={each} />)
-          ) : (
-            <NoVideos />
-          )}
-        </div>
-      </div>
-    );
+
+    return <HomeComponent fullDetails={fullDetails} />;
   };
 
   const FailureView = () => {

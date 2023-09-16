@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { SEARCH_RESULTS_API } from "../../config/constants";
-import VideoCard from "../../components/VideoCard";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails } from "../../helper";
-import { v4 as uuidV4 } from "uuid";
 import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
 import Shimmer from "../../components/Shimmer";
+import LiveComponent from "../../components/LIveComponent";
 
 const constApiStatus = {
   initial: "INITIAL",
@@ -69,16 +68,7 @@ const Live = () => {
       (each) => each?.snippet?.liveBroadcastContent === "live"
     );
 
-    return (
-      <div
-        className={`p-4 mxs:p-2 flex flex-col mxs:flex-row mxs:flex-wrap overflow-y-auto h-[96%]`}
-      >
-        {onlyLiveVideos.length > 0 &&
-          onlyLiveVideos?.map((each) => (
-            <VideoCard key={uuidV4()} videosList={each} />
-          ))}
-      </div>
-    );
+    return <LiveComponent onlyLiveVideos={onlyLiveVideos} />;
   };
 
   const FailureView = () => {

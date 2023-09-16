@@ -80,7 +80,11 @@ const LikesAndSaveButtons = (data) => {
                 <span className="text-xs"> subscribers</span>
               </p>
             </div>
-            <div className="py-2 h-fit bg-gray-200 rounded-full flex flex-col justify-center items-center w-36">
+            <div
+              className={`py-2 h-fit  rounded-full flex flex-col justify-center items-center w-36 ${
+                isDarkMode ? "bg-slate-900" : "bg-gray-200"
+              }`}
+            >
               {useNumericToAlpha(statistics?.viewCount) + "  views"}
             </div>
           </div>
