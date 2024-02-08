@@ -61,7 +61,7 @@ const Header = () => {
   const getData = async () => {
     try {
       const apiUrl = YOUTUBE_SEARCH_SUGGESTIONS_API + searchInput;
-      const response = await fetch(apiUrl);
+      const response = await fetch(apiUrl, { mode: "cors" });
       const data = await response.json();
       setSearchSuggestions(data[1]);
       dispatch(handleCacheData({ [searchInput]: data[1] }));
