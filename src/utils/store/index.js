@@ -17,6 +17,7 @@ const store = configureStore({
     comment: CommentSlice,
     liveChat: LiveChatSlice,
   },
+  devTools: false,
 });
 
 export default store;
