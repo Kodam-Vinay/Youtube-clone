@@ -17,23 +17,27 @@ const constApiStatus = {
 const Live = () => {
   const [apiStaus, setApiStatus] = useState({
     status: constApiStatus.initial,
-    data: {},
+    data: [],
   });
 
   document.title = "Live";
+
   useEffect(() => {
     setApiStatus((prev) => ({
       ...prev,
       status: constApiStatus.inProgress,
     }));
   }, []);
+
   const videosList = useGetVideosList(
     SEARCH_RESULTS_API.replace(
       "q=vinay&maxResults=20",
       "q=live&maxResults=50&regionCode=IN"
     )
   );
+
   useEffect(() => {
+    console.log(videosList);
     if (videosList?.videos?.length > 0) {
       setApiStatus((prev) => ({
         ...prev,
@@ -45,11 +49,6 @@ const Live = () => {
         ...prev,
         status: constApiStatus.failure,
       }));
-    } else if (videosList === undefined) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.inProgress,
-      }));
     }
   }, [videosList?.videos, videosList?.error]);
 
@@ -58,10 +57,12 @@ const Live = () => {
     const result = apiStaus?.data?.videos?.map((each) => each?.id?.videoId);
     const getVideosList = useVideoDetailsWithOneAPi(result);
     const { videos, channelDetails } = getVideosList;
+
     if (videos !== undefined && channelDetails !== undefined) {
       fullDetails = getFullDetails(videos, channelDetails);
     }
     if (getVideosList === "IN_PROGRESS") {
+      console.log("hello");
       return null;
     }
     const onlyLiveVideos = fullDetails.filter(
@@ -88,6 +89,7 @@ const Live = () => {
   };
   return (
     <div className="w-full h-full">
+      {" "}
       <RenderResults />
     </div>
   );

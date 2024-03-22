@@ -4,24 +4,27 @@ import useChannelDetails from "../useChannelDetails";
 const useGetVideosList = (apiUrl) => {
   useEffect(() => {
     getData();
-  }, []);
+  }, [apiUrl]);
+
   const [videosList, setVideosList] = useState({
     videos: [],
     channelIds: [],
   });
+
   const [error, setError] = useState({});
-  const channelDetails = useChannelDetails(videosList.channelIds);
+  const channelDetails = useChannelDetails(videosList?.channelIds);
+
   const getData = async () => {
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
       if (response.status === 200) {
-        const channelDetails = data?.items?.map(
+        const channelIdsInfo = data?.items?.map(
           (each) => each?.snippet?.channelId
         );
         setVideosList({
           videos: data?.items,
-          channelIds: channelDetails,
+          channelIds: channelIdsInfo,
         });
       } else {
         setError({ error: response.status });
@@ -30,7 +33,7 @@ const useGetVideosList = (apiUrl) => {
       console.log(error);
     }
   };
-  return videosList.videos?.length > 0 && channelDetails.length > 0
+  return videosList.videos?.length > 0 && channelDetails?.length > 0
     ? { videos: videosList?.videos, channelDetails: channelDetails }
     : error
     ? error
