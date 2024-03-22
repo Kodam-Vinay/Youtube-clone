@@ -60,11 +60,19 @@ const Header = () => {
 
   const getData = async () => {
     try {
+      if (searchInput === "") return;
       const apiUrl = YOUTUBE_SEARCH_SUGGESTIONS_API + searchInput;
-      const response = await fetch(apiUrl, { mode: "cors" });
-      const data = await response.json();
-      setSearchSuggestions(data[1]);
-      dispatch(handleCacheData({ [searchInput]: data[1] }));
+      const response = await fetch(apiUrl);
+      const data = await response.text();
+      const searchSuggestions = [];
+      data.split("[").forEach((ele, index) => {
+        if (!ele.split('"')[1] || index === 1) return;
+        return searchSuggestions.push(ele.split('"')[1]);
+      });
+      setSearchSuggestions(
+        searchSuggestions.slice(0, searchSuggestions.length - 1)
+      );
+      dispatch(handleCacheData({ [searchInput]: searchSuggestions }));
     } catch (error) {
       console.log(error);
     }
