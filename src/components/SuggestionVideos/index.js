@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { API_STATUS_LIST, POPULAR_VIDEOS_API } from "../../config/constants";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../../pages/ErrorPage";
 import ShowSearchResults from "../ShowSearchResults";
 import { RingLoader } from "react-spinners";
-import { getFullDetails } from "../../helper";
+import { getFullDetails, storeToastError } from "../../helper";
 
 const SuggestionVideos = ({ categoryId }) => {
   const [apiStatus, setApiStatus] = useState({
@@ -12,6 +12,12 @@ const SuggestionVideos = ({ categoryId }) => {
     errorMessage: "",
   });
   const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (apiStatus?.status === API_STATUS_LIST.failure) {
+      storeToastError(apiStatus?.errorMessage);
+    }
+  }, [apiStatus]);
 
   useGetVideosList({
     apiUrl:

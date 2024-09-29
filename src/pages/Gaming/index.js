@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { API_STATUS_LIST, POPULAR_VIDEOS_API } from "../../config/constants";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
-import { getFullDetails } from "../../helper";
+import { getFullDetails, storeToastError } from "../../helper";
 import Shimmer from "../../components/Shimmer";
 import RenderComponent from "../../components/RenderComponent";
 
@@ -12,6 +12,12 @@ const Gaming = () => {
     errorMessage: "",
   });
   const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (apiStatus?.status === API_STATUS_LIST.failure) {
+      storeToastError(apiStatus?.errorMessage);
+    }
+  }, [apiStatus]);
 
   document.title = "Gaming";
 

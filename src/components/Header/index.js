@@ -23,12 +23,19 @@ import { closeMenu } from "../../Slices/HamburgerSlice";
 import { CiDark, CiLight } from "react-icons/ci";
 import { toggleTheme } from "../../Slices/ThemeModeSlice";
 import { RingLoader } from "react-spinners";
+import { storeToastError } from "../../helper";
 
 const Header = () => {
   const [apiStatus, setApiStatus] = useState({
     status: API_STATUS_LIST.initial,
     errorMessage: "",
   });
+
+  useEffect(() => {
+    if (apiStatus?.status === API_STATUS_LIST.failure) {
+      storeToastError(apiStatus?.errorMessage);
+    }
+  }, [apiStatus]);
 
   useEffect(() => {
     window.addEventListener("resize", () => {

@@ -8,6 +8,7 @@ import { clearLiveChat } from "../../Slices/LiveChatSlice";
 import VideoComponent from "../../components/VideoComponent";
 import { API_STATUS_LIST } from "../../config/constants";
 import { RingLoader } from "react-spinners";
+import { storeToastError } from "../../helper";
 
 const Video = () => {
   const [apiStatus, setApiStatus] = useState({
@@ -16,6 +17,13 @@ const Video = () => {
   });
 
   const [data, setData] = useState({});
+
+  useEffect(() => {
+    if (apiStatus?.status === API_STATUS_LIST.failure) {
+      storeToastError(apiStatus?.errorMessage);
+    }
+  }, [apiStatus]);
+
   const [channelDetails, setChannelDetails] = useState({});
   useEffect(() => {
     return () => {

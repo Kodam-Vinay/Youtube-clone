@@ -2,10 +2,11 @@ import useSearchResults from "../../utils/useSearchResults";
 import ShowSearchResults from "../../components/ShowSearchResults";
 import { v4 as uuidV4 } from "uuid";
 import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorPage from "../ErrorPage";
 import SearchResultsShimmer from "../../components/SearchResultsShimmer";
 import { API_STATUS_LIST } from "../../config/constants";
+import { storeToastError } from "../../helper";
 
 const SearchResults = () => {
   const [apiStatus, setApiStatus] = useState({
@@ -13,6 +14,12 @@ const SearchResults = () => {
     errorMessage: "",
   });
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    if (apiStatus?.status === API_STATUS_LIST.failure) {
+      storeToastError(apiStatus?.errorMessage);
+    }
+  }, [apiStatus]);
 
   useSearchResults({
     setApiStatus,
