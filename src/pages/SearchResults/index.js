@@ -2,51 +2,28 @@ import useSearchResults from "../../utils/useSearchResults";
 import ShowSearchResults from "../../components/ShowSearchResults";
 import { v4 as uuidV4 } from "uuid";
 import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ErrorPage from "../ErrorPage";
 import SearchResultsShimmer from "../../components/SearchResultsShimmer";
-
-const constApiStatus = {
-  initial: "INITIAL",
-  inProgress: "IN_PROGRESS",
-  success: "SUCCESS",
-  failure: "FAILURE",
-};
+import { API_STATUS_LIST } from "../../config/constants";
 
 const SearchResults = () => {
-  const [apiStaus, setApiStatus] = useState({
-    status: constApiStatus.initial,
-    data: [],
+  const [apiStatus, setApiStatus] = useState({
+    status: API_STATUS_LIST.initial,
+    errorMessage: "",
+  });
+  const [data, setData] = useState([]);
+
+  useSearchResults({
+    setApiStatus,
+    setData,
   });
 
-  useEffect(() => {
-    setApiStatus((prev) => ({
-      ...prev,
-      status: constApiStatus.inProgress,
-    }));
-  }, []);
-  const results = useSearchResults();
-  useEffect(() => {
-    if (results.length > 0) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.success,
-        data: results,
-      }));
-    } else if (results?.error) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.failure,
-      }));
-    } else {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.inProgress,
-      }));
-    }
-  }, [results, results?.error]);
-  const FirstSuccessView = () => {
-    const videosList = useVideoDetailsWithOneAPi(apiStaus.data);
+  const SuccessView = () => {
+    const videosList = useVideoDetailsWithOneAPi({
+      setApiStatus,
+      videosList: data,
+    });
     const videos = videosList?.videos;
     const channel = videosList?.channelDetails;
     if (
@@ -55,8 +32,8 @@ const SearchResults = () => {
       typeof channel === "object" &&
       channel.length > 0
     ) {
-      const fullDetails = videos.map((each) => {
-        let channelId = channel.find(
+      const fullDetails = videos?.map((each) => {
+        let channelId = channel?.find(
           (eachItem) => eachItem.id === each?.snippet?.channelId
         );
         if (channelId) {
@@ -75,7 +52,7 @@ const SearchResults = () => {
     } else if (videosList >= 400 || videosList.error >= 400) {
       setApiStatus((prev) => ({
         ...prev,
-        status: constApiStatus.failure,
+        status: API_STATUS_LIST.failure,
       }));
     } else {
       return null;
@@ -87,12 +64,12 @@ const SearchResults = () => {
   };
 
   const RenderResults = () => {
-    switch (apiStaus.status) {
-      case constApiStatus.inProgress:
+    switch (apiStatus.status) {
+      case API_STATUS_LIST.inProgress:
         return <SearchResultsShimmer />;
-      case constApiStatus.success:
-        return <FirstSuccessView />;
-      case constApiStatus.failure:
+      case API_STATUS_LIST.success:
+        return <SuccessView />;
+      case API_STATUS_LIST.failure:
         return <FailureView />;
       default:
         return null;

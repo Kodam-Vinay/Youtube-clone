@@ -7,6 +7,7 @@ import YoutubeLogo from "../../utils/svgs/YoutubeLogo";
 import { toggleMenu } from "../../Slices/HamburgerSlice";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  API_STATUS_LIST,
   DUMMY_IMG_URL,
   YOUTUBE_SEARCH_SUGGESTIONS_API,
 } from "../../config/constants";
@@ -16,12 +17,19 @@ import {
   handleCacheData,
   makeSearchClicked,
   storeSearchInput,
+  storeSearchQuery,
 } from "../../Slices/SearchSuggestionSlice";
 import { closeMenu } from "../../Slices/HamburgerSlice";
 import { CiDark, CiLight } from "react-icons/ci";
 import { toggleTheme } from "../../Slices/ThemeModeSlice";
+import { RingLoader } from "react-spinners";
 
 const Header = () => {
+  const [apiStatus, setApiStatus] = useState({
+    status: API_STATUS_LIST.initial,
+    errorMessage: "",
+  });
+
   useEffect(() => {
     window.addEventListener("resize", () => {
       window.screen.availWidth >= 640 && setIsSearchClicked(false);
@@ -30,6 +38,7 @@ const Header = () => {
     window.screen.availWidth < 550 && dispatch(closeMenu());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const dispatch = useDispatch();
   const suggestionsList = useSelector((store) => store.suggestions.cacheData);
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
@@ -37,7 +46,7 @@ const Header = () => {
     dispatch(toggleMenu());
   };
   const [searchSuggestions, setSearchSuggestions] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const searchQuery = useSelector((store) => store?.suggestions?.searchQuery);
   const [isSearchActive, setSearchActive] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const navigate = useNavigate();
@@ -45,8 +54,8 @@ const Header = () => {
   useEffect(() => {
     //adding debouncing using setTimeout
     const timerId = setTimeout(() => {
-      if (suggestionsList[searchInput]) {
-        setSearchSuggestions(suggestionsList[searchInput]);
+      if (suggestionsList[searchQuery]) {
+        setSearchSuggestions(suggestionsList[searchQuery]);
       } else {
         getData();
       }
@@ -56,38 +65,59 @@ const Header = () => {
       clearTimeout(timerId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchInput]);
+  }, [searchQuery]);
 
   const getData = async () => {
     try {
-      if (searchInput === "") return;
-      const apiUrl = YOUTUBE_SEARCH_SUGGESTIONS_API + searchInput;
+      if (searchQuery === "") return;
+      setApiStatus((prev) => ({
+        ...prev,
+        status: API_STATUS_LIST.inProgress,
+      }));
+      const apiUrl = YOUTUBE_SEARCH_SUGGESTIONS_API + searchQuery;
       const response = await fetch(apiUrl);
       const data = await response.text();
       const searchSuggestions = [];
-      data.split("[").forEach((ele, index) => {
-        if (!ele.split('"')[1] || index === 1) return;
-        return searchSuggestions.push(ele.split('"')[1]);
-      });
-      setSearchSuggestions(
-        searchSuggestions.slice(0, searchSuggestions.length - 1)
-      );
-      dispatch(handleCacheData({ [searchInput]: searchSuggestions }));
+      if (response.ok) {
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.success,
+          errorMessage: data?.message || "Something Error Occured",
+        }));
+        data.split("[").forEach((ele, index) => {
+          if (!ele.split('"')[1] || index === 1) return;
+          return searchSuggestions.push(ele.split('"')[1]);
+        });
+        setSearchSuggestions(
+          searchSuggestions.slice(0, searchSuggestions.length - 1)
+        );
+        dispatch(handleCacheData({ [searchQuery]: searchSuggestions }));
+      } else {
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.failure,
+          errorMessage: data?.message || "Something Error Occured",
+        }));
+      }
     } catch (error) {
-      console.log(error);
+      setApiStatus((prev) => ({
+        ...prev,
+        status: API_STATUS_LIST.failure,
+        errorMessage: error?.message || "Something Error Occured",
+      }));
     }
   };
 
   const onClickSearch = (suggestion) => {
-    if (searchInput !== "") {
+    if (searchQuery !== "") {
       if (typeof suggestion === "string") {
         navigate(`/search?query=${suggestion}`);
         dispatch(makeSearchClicked(true));
         dispatch(storeSearchInput(suggestion));
-      } else if (searchInput !== "") {
-        navigate(`/search?query=${searchInput}`);
+      } else if (searchQuery !== "") {
+        navigate(`/search?query=${searchQuery}`);
         dispatch(makeSearchClicked(true));
-        dispatch(storeSearchInput(searchInput));
+        dispatch(storeSearchInput(searchQuery));
       }
     }
     setSearchActive(false);
@@ -95,15 +125,17 @@ const Header = () => {
 
   const onPressEnterWithSearch = (event) => {
     if (event.key === "Enter") {
-      if (searchInput !== "") {
+      if (searchQuery !== "") {
         onClickSearch();
         setSearchActive(false);
       }
     }
   };
+
   const onClickLightMode = () => {
     dispatch(toggleTheme(false));
   };
+
   const onClickDarkMode = () => {
     dispatch(toggleTheme(true));
   };
@@ -160,9 +192,11 @@ const Header = () => {
                       isDarkMode ? "bg-black text-white" : "bg-white text-black"
                     }`}
                     placeholder="search"
-                    onChange={(event) => setSearchInput(event.target.value)}
+                    onChange={(event) =>
+                      dispatch(storeSearchQuery(event.target.value))
+                    }
                     onFocus={() => setSearchActive(true)}
-                    value={searchInput}
+                    value={searchQuery}
                     onBlur={() =>
                       searchSuggestions
                         ? setSearchActive(true)
@@ -173,22 +207,28 @@ const Header = () => {
                 </div>
                 {isSearchActive &&
                   searchSuggestions.length > 0 &&
-                  searchInput !== "" && (
+                  searchQuery !== "" && (
                     <ul
                       className={`p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10 w-[29%] md:w-1/3 xl:w-[30%] space-y-1 ${
                         isDarkMode ? "bg-black" : "bg-white"
                       }`}
                     >
-                      {searchSuggestions.map((each) => (
-                        <SearchSuggestion
-                          key={uuidV4()}
-                          suggestion={each}
-                          setSearchActive={setSearchActive}
-                          setSearchInput={setSearchInput}
-                          onClickSearch={onClickSearch}
-                          searchInput={searchInput}
-                        />
-                      ))}
+                      {apiStatus === API_STATUS_LIST.success ? (
+                        searchSuggestions.map((each) => (
+                          <SearchSuggestion
+                            key={uuidV4()}
+                            suggestion={each}
+                            setSearchActive={setSearchActive}
+                            setSearchInput={() => dispatch(storeSearchQuery)}
+                            onClickSearch={onClickSearch}
+                            searchInput={searchQuery}
+                          />
+                        ))
+                      ) : apiStatus === API_STATUS_LIST.inProgress ? (
+                        <div className="w-full h-full flex items-center justify-center m-auto">
+                          <RingLoader />
+                        </div>
+                      ) : null}
                     </ul>
                   )}
               </div>
@@ -264,9 +304,11 @@ const Header = () => {
                     isDarkMode ? "bg-black text-white" : "bg-white text-black"
                   }`}
                   placeholder="search"
-                  onChange={(event) => setSearchInput(event.target.value)}
+                  onChange={(event) =>
+                    dispatch(storeSearchQuery(event.target.value))
+                  }
                   onFocus={() => setSearchActive(true)}
-                  value={searchInput}
+                  value={searchQuery}
                   onBlur={() =>
                     searchSuggestions
                       ? setSearchActive(true)
@@ -277,7 +319,7 @@ const Header = () => {
               </div>
               {isSearchActive &&
                 searchSuggestions.length > 0 &&
-                searchInput !== "" && (
+                searchQuery !== "" && (
                   <ul
                     className={`p-1 py-2 shadow-md rounded-lg mt-1 absolute top-10  space-y-1 w-4/5 ${
                       isDarkMode ? "bg-black" : "bg-white"
@@ -288,9 +330,9 @@ const Header = () => {
                         key={uuidV4()}
                         suggestion={each}
                         setSearchActive={setSearchActive}
-                        setSearchInput={setSearchInput}
+                        setSearchInput={() => storeSearchQuery()}
                         onClickSearch={onClickSearch}
-                        searchInput={searchInput}
+                        searchInput={searchQuery}
                       />
                     ))}
                   </ul>

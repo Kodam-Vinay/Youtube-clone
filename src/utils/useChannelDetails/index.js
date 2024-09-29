@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
-import { CHANNEL_DETAILS_API } from "../../config/constants";
+import { useEffect } from "react";
+import { API_STATUS_LIST, CHANNEL_DETAILS_API } from "../../config/constants";
 
-const useChannelDetails = (channelList) => {
+const useChannelDetails = ({ channelList, setApiStatus, setData }) => {
   useEffect(() => {
-    getChannelDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    channelList?.length > 0 && getChannelDetails();
   }, [channelList]);
 
-  const [channelDetails, setChannelDetails] = useState([]);
   const getChannelDetails = async () => {
     if (channelList?.length > 0) {
       const channelsIdList = channelList?.join("%2C");
@@ -16,18 +14,36 @@ const useChannelDetails = (channelList) => {
         channelsIdList
       );
       try {
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.inProgress,
+        }));
+
         const response = await fetch(apiUrl);
         const data = await response.json();
         if (response.ok) {
-          setChannelDetails(data?.items);
+          setApiStatus((prev) => ({
+            ...prev,
+            status: API_STATUS_LIST.success,
+          }));
+          setData(data?.items);
+        } else {
+          setApiStatus((prev) => ({
+            ...prev,
+            status: API_STATUS_LIST.failure,
+            errorMessage: data?.message || "Something Error Occured",
+          }));
         }
       } catch (error) {
-        console.log(error);
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.failure,
+          errorMessage: error?.message || "Something Error Occured",
+        }));
       }
     } else {
       setTimeout(() => {}, 0);
     }
   };
-  return channelDetails?.length > 0 ? channelDetails : "";
 };
 export default useChannelDetails;

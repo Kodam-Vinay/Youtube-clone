@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import useChannelDetails from "../useChannelDetails";
+import { API_STATUS_LIST } from "../../config/constants";
 
-const useGetVideosList = (apiUrl) => {
+const useGetVideosList = ({ apiUrl, setApiStatus, setData }) => {
   useEffect(() => {
     getData();
   }, [apiUrl]);
@@ -10,33 +11,56 @@ const useGetVideosList = (apiUrl) => {
     videos: [],
     channelIds: [],
   });
+  const [channelDetails, setChannelDetails] = useState([]);
 
-  const [error, setError] = useState({});
-  const channelDetails = useChannelDetails(videosList?.channelIds);
+  useChannelDetails({
+    channelList: videosList?.channelIds,
+    setApiStatus,
+    setData: setChannelDetails,
+  });
+
+  useEffect(() => {
+    setData({
+      videos: videosList?.videos,
+      channelDetails: channelDetails,
+    });
+  }, [videosList, channelDetails]);
 
   const getData = async () => {
     try {
+      setApiStatus((prev) => ({
+        ...prev,
+        status: API_STATUS_LIST.inProgress,
+      }));
       const response = await fetch(apiUrl);
       const data = await response.json();
-      if (response.status === 200) {
+      if (response.ok) {
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.success,
+        }));
         const channelIdsInfo = data?.items?.map(
           (each) => each?.snippet?.channelId
         );
+
         setVideosList({
-          videos: data?.items,
-          channelIds: channelIdsInfo,
+          videos: data?.items?.slice(0, 50),
+          channelIds: channelIdsInfo?.slice(0, 50),
         });
       } else {
-        setError({ error: response.status });
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.inProgress,
+          errorMessage: data?.message || "Something Error Occured",
+        }));
       }
     } catch (error) {
-      console.log(error);
+      setApiStatus((prev) => ({
+        ...prev,
+        status: API_STATUS_LIST.inProgress,
+        errorMessage: error?.message || "Something Error Occured",
+      }));
     }
   };
-  return videosList.videos?.length > 0 && channelDetails?.length > 0
-    ? { videos: videosList?.videos, channelDetails: channelDetails }
-    : error
-    ? error
-    : "IN_PROGRESS";
 };
 export default useGetVideosList;

@@ -1,95 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { SEARCH_RESULTS_API } from "../../config/constants";
+import React, { useState } from "react";
+import { API_STATUS_LIST, SEARCH_RESULTS_API } from "../../config/constants";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails } from "../../helper";
-import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
 import Shimmer from "../../components/Shimmer";
-import LiveComponent from "../../components/LIveComponent";
-
-const constApiStatus = {
-  initial: "INITIAL",
-  inProgress: "IN_PROGRESS",
-  success: "SUCCESS",
-  failure: "FAILURE",
-};
+import LiveComponent from "../../components/LiveComponent";
 
 const Live = () => {
-  const [apiStaus, setApiStatus] = useState({
-    status: constApiStatus.initial,
-    data: [],
+  const [apiStatus, setApiStatus] = useState({
+    status: API_STATUS_LIST.initial,
+    errorMessage: "",
   });
-
+  const [data, setData] = useState({});
   document.title = "Live";
 
-  useEffect(() => {
-    setApiStatus((prev) => ({
-      ...prev,
-      status: constApiStatus.inProgress,
-    }));
-  }, []);
-
-  const videosList = useGetVideosList(
-    SEARCH_RESULTS_API.replace(
+  useGetVideosList({
+    apiUrl: SEARCH_RESULTS_API.replace(
       "q=vinay&maxResults=20",
-      "q=live&maxResults=50&regionCode=IN"
-    )
-  );
-
-  useEffect(() => {
-    console.log(videosList);
-    if (videosList?.videos?.length > 0) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.success,
-        data: videosList,
-      }));
-    } else if (videosList?.error) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.failure,
-      }));
-    }
-  }, [videosList?.videos, videosList?.error]);
+      "eventType=live&type=video&maxResults=50&regionCode=IN"
+    ),
+    setApiStatus,
+    setData,
+  });
 
   const SuccessView = () => {
-    let fullDetails = [];
-    const result = apiStaus?.data?.videos?.map((each) => each?.id?.videoId);
-    const getVideosList = useVideoDetailsWithOneAPi(result);
-    const { videos, channelDetails } = getVideosList;
+    const videos = data?.videos;
+    const channelDetails = data?.channelDetails;
 
-    if (videos !== undefined && channelDetails !== undefined) {
-      fullDetails = getFullDetails(videos, channelDetails);
-    }
-    if (getVideosList === "IN_PROGRESS") {
-      console.log("hello");
-      return null;
-    }
-    const onlyLiveVideos = fullDetails.filter(
+    const fullDetails = getFullDetails(videos, channelDetails);
+    const onlyLiveVideos = fullDetails?.filter(
       (each) => each?.snippet?.liveBroadcastContent === "live"
     );
 
     return <LiveComponent onlyLiveVideos={onlyLiveVideos} />;
   };
 
-  const FailureView = () => {
-    return <ErrorPage />;
-  };
   const RenderResults = () => {
-    switch (apiStaus.status) {
-      case constApiStatus.inProgress:
+    switch (apiStatus.status) {
+      case API_STATUS_LIST.inProgress:
         return <Shimmer />;
-      case constApiStatus.success:
+      case API_STATUS_LIST.success:
         return <SuccessView />;
-      case constApiStatus.failure:
-        return <FailureView />;
+      case API_STATUS_LIST.failure:
+        return <ErrorPage />;
       default:
         return null;
     }
   };
+
   return (
     <div className="w-full h-full">
-      {" "}
       <RenderResults />
     </div>
   );

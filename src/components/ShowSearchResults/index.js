@@ -12,7 +12,6 @@ const ShowSearchResults = ({ searchResults }) => {
   const dispatch = useDispatch();
   const { snippet, id, statistics } = searchResults;
   const { channelDetails } = searchResults;
-  const { snippet: channelSnippet } = channelDetails;
   const date = useDateToDistanceFormat(snippet?.publishedAt);
   const onClickVideo = () => {
     dispatch(makeSearchClicked(false));
@@ -59,7 +58,7 @@ const ShowSearchResults = ({ searchResults }) => {
               <img
                 src={
                   channelDetails
-                    ? channelSnippet?.thumbnails?.medium?.url
+                    ? channelDetails?.snippet?.thumbnails?.medium?.url
                     : DUMMY_IMG_URL
                 }
                 alt="channel-logo"

@@ -13,8 +13,16 @@ const VideoCard = ({ videosList }) => {
   const onClickVideo = () => {
     document.title = snippet?.title;
   };
+
   return (
-    <Link to={`/watch?v=${videosList?.id}`} onClick={onClickVideo}>
+    <Link
+      to={
+        snippet?.liveBroadcastContent === "live"
+          ? `/watch?v=${videosList?.id?.videoId}`
+          : `/watch?v=${videosList?.id}`
+      }
+      onClick={onClickVideo}
+    >
       <div className={`m-2 w-full mb-2 mxs:w-64`}>
         <img
           src={snippet?.thumbnails?.medium?.url}
@@ -22,15 +30,21 @@ const VideoCard = ({ videosList }) => {
           className="rounded-lg w-full shadow-lg"
         />
         <div className="mt-3 flex">
-          <img
-            src={
-              channelDetails
-                ? channelDetails?.snippet?.thumbnails?.medium?.url
-                : DUMMY_IMG_URL
-            }
-            alt="channel-logo"
-            className="h-8 w-8 rounded-full mr-2"
-          />
+          {channelDetails?.snippet?.thumbnails?.medium?.url ? (
+            <img
+              src={
+                channelDetails?.snippet?.thumbnails?.medium?.url
+                  ? channelDetails?.snippet?.thumbnails?.medium?.url
+                  : DUMMY_IMG_URL
+              }
+              alt="channel-logo"
+              className="h-8 w-8 rounded-full mr-2"
+            />
+          ) : (
+            <span className="h-8 w-8 rounded-full mr-2 border">
+              {snippet?.channelTitle[0]}
+            </span>
+          )}
 
           <div className={`${isDarkMode ? "text-white" : "text-black"}`}>
             <p className="font-bold text-sm mb-1">

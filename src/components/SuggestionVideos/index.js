@@ -1,69 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { POPULAR_VIDEOS_API } from "../../config/constants";
+import React, { useState } from "react";
+import { API_STATUS_LIST, POPULAR_VIDEOS_API } from "../../config/constants";
 import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../../pages/ErrorPage";
 import ShowSearchResults from "../ShowSearchResults";
 import { RingLoader } from "react-spinners";
 import { getFullDetails } from "../../helper";
-import { channelDetails, videos } from "../../utils/mock";
-
-const constApiStatus = {
-  initial: "INITIAL",
-  inProgress: "IN_PROGRESS",
-  success: "SUCCESS",
-  failure: "FAILURE",
-};
 
 const SuggestionVideos = ({ categoryId }) => {
-  const [apiStaus, setApiStatus] = useState({
-    status: constApiStatus.initial,
-    data: {},
+  const [apiStatus, setApiStatus] = useState({
+    status: API_STATUS_LIST.initial,
+    errorMessage: "",
+  });
+  const [data, setData] = useState({});
+
+  useGetVideosList({
+    apiUrl:
+      POPULAR_VIDEOS_API +
+      "&videoCategoryId=" +
+      categoryId.replace("maxResults=50", "maxResults=20"),
+    setApiStatus,
+    setData,
   });
 
-  useEffect(() => {
-    setApiStatus((prev) => ({
-      ...prev,
-      status: constApiStatus.inProgress,
-    }));
-  }, []);
-  const videosList = useGetVideosList(
-    (POPULAR_VIDEOS_API + "&videoCategoryId=" + categoryId).replace(
-      "maxResults=50",
-      "maxResults=20"
-    )
-  );
-  useEffect(() => {
-    if (videosList?.videos?.length > 0) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.success,
-        data: videosList,
-      }));
-    } else if (videosList.error === 404) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.success,
-        data: { videos, channelDetails },
-      }));
-    } else if (videosList.error) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.failure,
-      }));
-    } else if (videosList === undefined) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: constApiStatus.inProgress,
-      }));
-    }
-  }, [videosList?.videos, videosList.error]);
   const SuccessView = () => {
-    const videos = apiStaus?.data?.videos;
-    const channel = apiStaus?.data?.channelDetails;
+    const videos = data?.videos;
+    const channel = data?.channelDetails;
     const fullDetails = getFullDetails(videos, channel);
+
     return (
       <div className="flex flex-col h-[96%] space-y-2 w-full">
-        {fullDetails.length > 0 &&
+        {fullDetails?.length > 0 &&
           fullDetails?.map((each) => (
             <ShowSearchResults key={each?.id} searchResults={each} />
           ))}
@@ -75,16 +41,16 @@ const SuggestionVideos = ({ categoryId }) => {
     return <ErrorPage />;
   };
   const RenderResults = () => {
-    switch (apiStaus.status) {
-      case constApiStatus.inProgress:
+    switch (apiStatus.status) {
+      case API_STATUS_LIST.inProgress:
         return (
           <div className="w-full h-full flex items-center justify-center m-auto">
             <RingLoader />
           </div>
         );
-      case constApiStatus.success:
+      case API_STATUS_LIST.success:
         return <SuccessView />;
-      case constApiStatus.failure:
+      case API_STATUS_LIST.failure:
         return <FailureView />;
       default:
         return null;

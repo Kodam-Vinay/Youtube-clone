@@ -6,7 +6,7 @@ import CommentSection from "../CommentSection";
 import LiveChat from "../LiveChat";
 import SuggestionVideos from "../SuggestionVideos";
 
-const VideoComponent = ({ id, apiStaus, channelDetails, snippet }) => {
+const VideoComponent = ({ id, data, channelDetails, snippet }) => {
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   return (
     <>
@@ -25,7 +25,7 @@ const VideoComponent = ({ id, apiStaus, channelDetails, snippet }) => {
             />
           </div>
           <LikesAndSaveButtons
-            videoDetails={apiStaus.data}
+            videoDetails={data}
             channelDetails={channelDetails}
           />
         </div>

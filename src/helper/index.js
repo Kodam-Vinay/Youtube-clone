@@ -1,10 +1,12 @@
+import { toast } from "react-toastify";
+
 export const filterData = (fullDetails, activeFilterButton) =>
   fullDetails.filter(
     (each) => each?.snippet?.categoryId === activeFilterButton
   );
 
 export const getFullDetails = (videos, channel) =>
-  videos.map((each) => {
+  videos?.map((each) => {
     let channelId = channel.find(
       (eachItem) => eachItem?.id === each?.snippet?.channelId
     );
@@ -17,4 +19,8 @@ export const getFullDetails = (videos, channel) =>
 export const randomNameGenerator = (namesList) => {
   const randomNum = Math.ceil(Math.random() * namesList.length);
   return namesList[randomNum];
+};
+
+export const storeToastError = (errorMessage) => {
+  toast.error(errorMessage);
 };
