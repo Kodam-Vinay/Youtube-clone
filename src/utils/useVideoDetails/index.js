@@ -35,6 +35,12 @@ const useVideoDetails = ({ setData, setApiStatus }) => {
             status: API_STATUS_LIST.success,
           }));
           setData(data?.items[0]);
+        } else if (response.status === 403) {
+          setApiStatus((prev) => ({
+            ...prev,
+            status: API_STATUS_LIST.failure,
+            errorMessage: "Your Key was Expired",
+          }));
         } else {
           setApiStatus((prev) => ({
             ...prev,

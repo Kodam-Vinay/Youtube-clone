@@ -42,11 +42,16 @@ const useGetVideosList = ({ apiUrl, setApiStatus, setData }) => {
         const channelIdsInfo = data?.items?.map(
           (each) => each?.snippet?.channelId
         );
-
         setVideosList({
           videos: data?.items?.slice(0, 50),
           channelIds: channelIdsInfo?.slice(0, 50),
         });
+      } else if (response.status === 403) {
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.failure,
+          errorMessage: "Your Key was Expired",
+        }));
       } else {
         setApiStatus((prev) => ({
           ...prev,

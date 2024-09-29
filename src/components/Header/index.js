@@ -95,6 +95,7 @@ const Header = () => {
           if (!ele.split('"')[1] || index === 1) return;
           return searchSuggestions.push(ele.split('"')[1]);
         });
+
         setSearchSuggestions(
           searchSuggestions.slice(0, searchSuggestions.length - 1)
         );

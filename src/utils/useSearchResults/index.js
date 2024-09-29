@@ -48,6 +48,12 @@ const useSearchResults = ({ setApiStatus, setData }) => {
 
         const videoIds = data?.items?.map((each) => each?.id?.videoId);
         setData(videoIds);
+      } else if (response.status === 403) {
+        setApiStatus((prev) => ({
+          ...prev,
+          status: API_STATUS_LIST.failure,
+          errorMessage: "Your Key was Expired",
+        }));
       } else {
         setApiStatus((prev) => ({
           ...prev,

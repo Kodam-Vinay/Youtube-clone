@@ -1,8 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../../pages/Home";
 import SomethingWentWrong from "../../pages/SomethingWentWrong";
 import Music from "../../pages/Music";

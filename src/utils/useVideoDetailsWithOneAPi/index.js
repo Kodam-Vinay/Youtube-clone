@@ -48,6 +48,12 @@ const useVideoDetailsWithOneAPi = ({ videosList, setApiStatus }) => {
             videos: data?.items,
             channelIds: channelDetails,
           });
+        } else if (response.status === 403) {
+          setApiStatus((prev) => ({
+            ...prev,
+            status: API_STATUS_LIST.failure,
+            errorMessage: "Your Key was Expired",
+          }));
         } else {
           setApiStatus((prev) => ({
             ...prev,
