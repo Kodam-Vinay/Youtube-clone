@@ -4,7 +4,7 @@ import useGetVideosList from "../../utils/useGetVideosList";
 import ErrorPage from "../ErrorPage";
 import { getFullDetails, storeToastError } from "../../helper";
 import Shimmer from "../../components/Shimmer";
-import LiveComponent from "../../components/LiveComponent";
+import LiveComponent from "../../components/LIveComponent";
 
 const Live = () => {
   const [apiStatus, setApiStatus] = useState({
