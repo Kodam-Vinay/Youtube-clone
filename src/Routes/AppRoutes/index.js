@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import Home from "../../pages/Home";
 import SomethingWentWrong from "../../pages/SomethingWentWrong";
 import Music from "../../pages/Music";
@@ -21,11 +25,14 @@ import Header from "../../components/Header";
 import Body from "../../components/Body";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import useDeviceOnline from "../../utils/useDeviceOnline";
+import OfflinePage from "../../pages/OfflinePage";
 
 const RenderLayout = () => {
   const [activeFilterButton, setActiveFilterButton] = useState(
     catergoriesList[0].value
   );
+  const isOnline = useDeviceOnline();
 
   const onClickContextMenu = (event) => {
     event.preventDefault();
@@ -45,9 +52,15 @@ const RenderLayout = () => {
           className="h-[95vh] mxs:h-screen overflow-hidden"
           onContextMenu={onClickContextMenu}
         >
-          <ToastContainer />
-          <Header />
-          <Body />
+          {!isOnline ? (
+            <OfflinePage />
+          ) : (
+            <>
+              <ToastContainer />
+              <Header />
+              <Body />
+            </>
+          )}
         </div>
       </FilterContext.Provider>
     </Provider>
@@ -110,10 +123,14 @@ const index = () => {
           element: <SavedVideos />,
           errorElement: <SomethingWentWrong />,
         },
-
         {
           path: "/search",
           element: <SearchResults />,
+          errorElement: <SomethingWentWrong />,
+        },
+        {
+          path: "/offline",
+          element: <OfflinePage />,
           errorElement: <SomethingWentWrong />,
         },
         {
