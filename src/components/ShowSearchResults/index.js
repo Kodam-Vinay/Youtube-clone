@@ -20,7 +20,10 @@ const ShowSearchResults = ({ searchResults }) => {
   const location = useLocation();
   const SuccessView = () => {
     return (
-      <Link to={`/watch?v=${searchResults?.id}`} onClick={onClickVideo}>
+      <Link
+        to={`/watch?v=${searchResults?.id?.videoId}`}
+        onClick={onClickVideo}
+      >
         <div className="flex">
           <img
             src={searchResults?.snippet?.thumbnails?.medium?.url}
