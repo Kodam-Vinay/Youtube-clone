@@ -10,21 +10,20 @@ import useWindowSize from "../../utils/useWindowSize";
 const ShowSearchResults = ({ searchResults }) => {
   const isDarkMode = useSelector((store) => store.theme.isDarkMode);
   const dispatch = useDispatch();
-  const { snippet, id, statistics } = searchResults;
-  const { channelDetails } = searchResults;
-  const date = useDateToDistanceFormat(snippet?.publishedAt);
+
+  const date = useDateToDistanceFormat(searchResults?.snippet?.publishedAt);
   const onClickVideo = () => {
     dispatch(makeSearchClicked(false));
   };
   const size = useWindowSize();
-  const count = useNumericToAlpha(statistics?.viewCount);
+  const count = useNumericToAlpha(searchResults?.statistics?.viewCount);
   const location = useLocation();
   const SuccessView = () => {
     return (
-      <Link to={`/watch?v=${id}`} onClick={onClickVideo}>
+      <Link to={`/watch?v=${searchResults?.id}`} onClick={onClickVideo}>
         <div className="flex">
           <img
-            src={snippet?.thumbnails?.medium?.url}
+            src={searchResults?.snippet?.thumbnails?.medium?.url}
             alt="youtbeVideoLogo"
             className={`${
               location.pathname === "/watch"
@@ -36,17 +35,17 @@ const ShowSearchResults = ({ searchResults }) => {
             <p className={`mxs:font-bold text-sm mb-1`}>
               {location.pathname === "/watch"
                 ? size.width < 400
-                  ? snippet?.title.slice(0, 15) + "..."
+                  ? searchResults?.snippet?.title.slice(0, 15) + "..."
                   : size.width >= 400 && size.width < 550
-                  ? snippet?.title.slice(0, 35) + "..."
+                  ? searchResults?.snippet?.title.slice(0, 35) + "..."
                   : size.width >= 550 && size.width < 1024
-                  ? snippet?.title
-                  : snippet?.title.slice(0, 15) + "..."
+                  ? searchResults?.snippet?.title
+                  : searchResults?.snippet?.title.slice(0, 15) + "..."
                 : size.width < 400
-                ? snippet?.title.slice(0, 15) + "..."
+                ? searchResults?.snippet?.title.slice(0, 15) + "..."
                 : size.width >= 400 && size.width < 550
-                ? snippet?.title.slice(0, 35) + "..."
-                : snippet?.title}
+                ? searchResults?.snippet?.title.slice(0, 35) + "..."
+                : searchResults?.snippet?.title}
             </p>
 
             <div className="flex items-center space-x-1">
@@ -57,8 +56,9 @@ const ShowSearchResults = ({ searchResults }) => {
             <div className="flex items-center">
               <img
                 src={
-                  channelDetails
-                    ? channelDetails?.snippet?.thumbnails?.medium?.url
+                  searchResults?.channelDetails
+                    ? searchResults?.channelDetails?.snippet?.thumbnails?.medium
+                        ?.url
                     : DUMMY_IMG_URL
                 }
                 alt="channel-logo"
@@ -68,7 +68,7 @@ const ShowSearchResults = ({ searchResults }) => {
                     : "h-8 w-8 rounded-full mr-2"
                 } `}
               />
-              <p className="text-sm">{snippet?.channelTitle}</p>
+              <p className="text-sm">{searchResults?.snippet?.channelTitle}</p>
             </div>
           </div>
         </div>

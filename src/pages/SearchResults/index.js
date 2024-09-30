@@ -1,12 +1,10 @@
 import useSearchResults from "../../utils/useSearchResults";
-import ShowSearchResults from "../../components/ShowSearchResults";
-import { v4 as uuidV4 } from "uuid";
-import useVideoDetailsWithOneAPi from "../../utils/useVideoDetailsWithOneAPi";
 import { useEffect, useState } from "react";
 import ErrorPage from "../ErrorPage";
 import SearchResultsShimmer from "../../components/SearchResultsShimmer";
 import { API_STATUS_LIST } from "../../config/constants";
-import { storeToastError } from "../../helper";
+import { getFullDetails, storeToastError } from "../../helper";
+import ShowSearchResults from "../../components/ShowSearchResults";
 
 const SearchResults = () => {
   const [apiStatus, setApiStatus] = useState({
@@ -27,43 +25,16 @@ const SearchResults = () => {
   });
 
   const SuccessView = () => {
-    const videosList = useVideoDetailsWithOneAPi({
-      setApiStatus,
-      videosList: data,
-    });
-    const videos = videosList?.videos;
-    const channel = videosList?.channelDetails;
-    if (
-      typeof videos === "object" &&
-      videos.length > 0 &&
-      typeof channel === "object" &&
-      channel.length > 0
-    ) {
-      const fullDetails = videos?.map((each) => {
-        let channelId = channel?.find(
-          (eachItem) => eachItem.id === each?.snippet?.channelId
-        );
-        if (channelId) {
-          each = { ...each, channelDetails: channelId };
-        }
-        return each;
-      });
-      return (
-        <div className="flex flex-col space-y-4">
-          {fullDetails.length > 0 &&
-            fullDetails.map((each) => (
-              <ShowSearchResults key={uuidV4()} searchResults={each} />
-            ))}
-        </div>
-      );
-    } else if (videosList >= 400 || videosList.error >= 400) {
-      setApiStatus((prev) => ({
-        ...prev,
-        status: API_STATUS_LIST.failure,
-      }));
-    } else {
-      return null;
-    }
+    const videos = data?.videos;
+    const channel = data?.channelDetails;
+    const fullDetails = getFullDetails(videos, channel);
+    return (
+      <>
+        {fullDetails?.map((each) => (
+          <ShowSearchResults key={each?.id?.videoId} searchResults={each} />
+        ))}
+      </>
+    );
   };
 
   const FailureView = () => {

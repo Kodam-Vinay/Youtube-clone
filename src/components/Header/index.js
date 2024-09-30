@@ -22,8 +22,8 @@ import {
 import { closeMenu } from "../../Slices/HamburgerSlice";
 import { CiDark, CiLight } from "react-icons/ci";
 import { toggleTheme } from "../../Slices/ThemeModeSlice";
-import { RingLoader } from "react-spinners";
 import { storeToastError } from "../../helper";
+import SearchSuggestionShimmer from "../SearchSuggestionShimmer";
 
 const Header = () => {
   const [apiStatus, setApiStatus] = useState({
@@ -54,6 +54,7 @@ const Header = () => {
   };
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const searchQuery = useSelector((store) => store?.suggestions?.searchQuery);
+
   const [isSearchActive, setSearchActive] = useState(false);
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const navigate = useNavigate();
@@ -89,7 +90,6 @@ const Header = () => {
         setApiStatus((prev) => ({
           ...prev,
           status: API_STATUS_LIST.success,
-          errorMessage: data?.message || "Something Error Occured",
         }));
         data.split("[").forEach((ele, index) => {
           if (!ele.split('"')[1] || index === 1) return;
@@ -148,6 +148,17 @@ const Header = () => {
     dispatch(toggleTheme(true));
   };
 
+  const handleBlurInput = () => {
+    const timer = setTimeout(() => {
+      setSearchActive(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  };
+
+  const handleFocusInput = () => {
+    setSearchActive(true);
+  };
+
   return (
     <>
       {!isSearchClicked ? (
@@ -203,13 +214,9 @@ const Header = () => {
                     onChange={(event) =>
                       dispatch(storeSearchQuery(event.target.value))
                     }
-                    onFocus={() => setSearchActive(true)}
+                    onFocus={handleFocusInput}
                     value={searchQuery}
-                    onBlur={() =>
-                      searchSuggestions
-                        ? setSearchActive(true)
-                        : setSearchActive(false)
-                    }
+                    onBlur={handleBlurInput}
                     onKeyDown={onPressEnterWithSearch}
                   />
                 </div>
@@ -221,7 +228,7 @@ const Header = () => {
                         isDarkMode ? "bg-black" : "bg-white"
                       }`}
                     >
-                      {apiStatus === API_STATUS_LIST.success ? (
+                      {apiStatus.status === API_STATUS_LIST.success ? (
                         searchSuggestions.map((each) => (
                           <SearchSuggestion
                             key={uuidV4()}
@@ -232,10 +239,8 @@ const Header = () => {
                             searchInput={searchQuery}
                           />
                         ))
-                      ) : apiStatus === API_STATUS_LIST.inProgress ? (
-                        <div className="w-full h-full flex items-center justify-center m-auto">
-                          <RingLoader />
-                        </div>
+                      ) : apiStatus.status === API_STATUS_LIST.inProgress ? (
+                        <SearchSuggestionShimmer />
                       ) : null}
                     </ul>
                   )}
@@ -315,13 +320,9 @@ const Header = () => {
                   onChange={(event) =>
                     dispatch(storeSearchQuery(event.target.value))
                   }
-                  onFocus={() => setSearchActive(true)}
+                  onFocus={handleFocusInput}
                   value={searchQuery}
-                  onBlur={() =>
-                    searchSuggestions
-                      ? setSearchActive(true)
-                      : setSearchActive(false)
-                  }
+                  onBlur={handleBlurInput}
                   onKeyDown={onPressEnterWithSearch}
                 />
               </div>
@@ -333,16 +334,20 @@ const Header = () => {
                       isDarkMode ? "bg-black" : "bg-white"
                     }`}
                   >
-                    {searchSuggestions.map((each) => (
-                      <SearchSuggestion
-                        key={uuidV4()}
-                        suggestion={each}
-                        setSearchActive={setSearchActive}
-                        setSearchInput={() => storeSearchQuery()}
-                        onClickSearch={onClickSearch}
-                        searchInput={searchQuery}
-                      />
-                    ))}
+                    {apiStatus.status === API_STATUS_LIST.success ? (
+                      searchSuggestions.map((each) => (
+                        <SearchSuggestion
+                          key={uuidV4()}
+                          suggestion={each}
+                          setSearchActive={setSearchActive}
+                          setSearchInput={() => dispatch(storeSearchQuery)}
+                          onClickSearch={onClickSearch}
+                          searchInput={searchQuery}
+                        />
+                      ))
+                    ) : apiStatus.status === API_STATUS_LIST.inProgress ? (
+                      <SearchSuggestionShimmer />
+                    ) : null}
                   </ul>
                 )}
             </div>
